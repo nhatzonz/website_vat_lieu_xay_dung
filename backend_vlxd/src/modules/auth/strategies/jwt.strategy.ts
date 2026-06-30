@@ -1,17 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import type { AppConfig } from '../../../config/configuration';
-import type { JwtPayload } from '../../../common/decorators/current-user.decorator';
+import type {
+  AuthenticatedUser,
+  JwtPayload,
+} from '../../../common/decorators/current-user.decorator';
+import { AdminsService } from '../../admins/admins.service';
 
 /**
- * Xác thực Bearer token cho khu admin.
- * Payload trả về sẽ được Passport gắn vào request.user.
+ * Xác thực Bearer token cho khu admin. Sau khi token hợp lệ, tra DB để chắc
+ * tài khoản còn tồn tại & đang hoạt động (token của admin bị khóa/xóa bị từ
+ * chối ngay, không chờ hết hạn). Kết quả gắn vào request.user.
  */
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(config: ConfigService<AppConfig, true>) {
+  constructor(
+    config: ConfigService<AppConfig, true>,
+    private readonly adminsService: AdminsService,
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -19,8 +27,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: JwtPayload): Promise<JwtPayload> {
-    // TODO: khi có bảng `admins`, có thể tra DB để chắc tài khoản còn hiệu lực.
-    return { sub: payload.sub, username: payload.username, role: payload.role };
+  async validate(payload: JwtPayload): Promise<AuthenticatedUser> {
+    const admin = await this.adminsService.findById(payload.sub);
+    if (!admin || !admin.isActive) {
+      throw new UnauthorizedException('Tài khoản không còn hiệu lực');
+    }
+    return {
+      id: admin.id,
+      username: admin.username,
+      role: admin.role,
+      fullName: admin.fullName,
+    };
   }
 }

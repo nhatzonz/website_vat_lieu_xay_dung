@@ -1,0 +1,61 @@
+// Design tokens dùng chung cho toàn FE (mục 7.1 plancode).
+// Tone chủ đạo: #F6B47C (cam đào) + trắng. File chỉ chứa biến + mixin
+// (KHÔNG xuất CSS) nên có thể `@use 'tokens' as *;` ở mọi .module.scss.
+
+// --- Màu thương hiệu ---
+$primary: #f6b47c;
+$primary-dark: #e89b5c;
+$primary-darker: #d6852f;
+$primary-light: #fcd9b8;
+$primary-soft: #fff1e6;
+
+// --- Nền & chữ ---
+$bg: #ffffff;
+$bg-soft: #f7f7f8;
+$bg-muted: #fafafa;
+$text: #222222;
+$text-muted: #6b7280;
+$text-invert: #ffffff;
+$border: #e5e7eb;
+$border-strong: #d1d5db;
+
+// --- Trạng thái ---
+$success: #16a34a;
+$danger: #dc2626;
+$danger-dark: #b91c1c;
+$warning: #f59e0b;
+$info: #2563eb;
+
+// --- Hình khối ---
+$radius-sm: 6px;
+$radius: 8px;
+$radius-lg: 12px;
+$shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+$shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
+
+// --- Khoảng cách (bậc 4) ---
+$space-1: 4px;
+$space-2: 8px;
+$space-3: 12px;
+$space-4: 16px;
+$space-5: 24px;
+$space-6: 32px;
+
+// --- Layout admin ---
+$sidebar-w: 248px;
+$topbar-h: 60px;
+
+// --- Mixin tiện ích ---
+@mixin card {
+  background: $bg;
+  border: 1px solid $border;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+}
+
+@mixin focus-ring {
+  outline: none;
+  border-color: $primary-dark;
+  box-shadow: 0 0 0 3px $primary-soft;
+}

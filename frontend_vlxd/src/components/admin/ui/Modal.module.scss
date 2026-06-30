@@ -1,0 +1,89 @@
+@use 'tokens' as *;
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: $space-6 $space-4;
+  background: rgba(17, 24, 39, 0.45);
+  overflow-y: auto;
+  animation: fade 0.15s ease;
+}
+
+.modal {
+  width: 100%;
+  margin-top: 4vh;
+  background: $bg;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-lg;
+  animation: pop 0.15s ease;
+}
+
+.md {
+  max-width: 520px;
+}
+
+.lg {
+  max-width: 760px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $space-4 $space-5;
+  border-bottom: 1px solid $border;
+}
+
+.title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: $text;
+}
+
+.close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: $radius;
+  background: transparent;
+  color: $text-muted;
+  cursor: pointer;
+
+  &:hover {
+    background: $bg-soft;
+    color: $text;
+  }
+}
+
+.body {
+  padding: $space-5;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: $space-3;
+  padding: $space-4 $space-5;
+  box-shadow: inset 0 1px 0 $border;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}

@@ -1,0 +1,166 @@
+@use 'tokens' as *;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  padding-bottom: 72px; // chừa chỗ cho thanh lưu cố định
+}
+
+.readonly {
+  padding: $space-3 $space-4;
+  border-radius: $radius;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #92400e;
+  font-size: 13px;
+}
+
+// --- Tabs nhóm ---
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+  padding: $space-2;
+  background: $bg-soft;
+  border-radius: $radius-lg;
+}
+
+.tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  padding: $space-2 $space-4;
+  border: none;
+  border-radius: $radius;
+  background: transparent;
+  color: $text-muted;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    color: $text;
+    background: $primary-soft;
+  }
+}
+
+.tabActive {
+  background: $bg;
+  color: $text;
+  box-shadow: $shadow-sm;
+
+  svg {
+    color: $primary-darker;
+  }
+}
+
+.tabBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: $primary;
+  color: $text;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+// --- Panel nhóm ---
+.panel {
+  @include card;
+  // KHÔNG dùng overflow:hidden ở đây — nó sẽ cắt mất dropdown (SearchableSelect)
+  // tràn ra ngoài thẻ. Bo góc header trực tiếp thay cho việc clip.
+}
+
+.panelHead {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-3;
+  padding: $space-4 $space-5;
+  background: linear-gradient(120deg, $primary-soft, $bg);
+  border-top-left-radius: $radius-lg;
+  border-top-right-radius: $radius-lg;
+}
+
+.panelIcon {
+  color: $primary-darker;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.panelTitle {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: $text;
+}
+
+.panelDesc {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: $text-muted;
+}
+
+.panelBody {
+  padding: $space-5;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: $space-4;
+}
+
+.full {
+  grid-column: 1 / -1;
+}
+
+.dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-left: 6px;
+  vertical-align: middle;
+  border-radius: 50%;
+  background: $primary-dark;
+}
+
+// --- Thanh lưu cố định dưới đáy vùng nội dung ---
+.savebar {
+  position: sticky;
+  bottom: 0;
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-4;
+  margin-top: auto;
+  padding: $space-3 $space-4;
+  background: $bg;
+  border-radius: $radius-lg;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.savebarInfo {
+  font-size: 13px;
+  color: $text-muted;
+}
+
+.savebarActions {
+  display: flex;
+  gap: $space-2;
+}
+
+.error {
+  @include card;
+  padding: $space-5;
+  color: $danger-dark;
+  background: #fef2f2;
+  border-color: #fecaca;
+}

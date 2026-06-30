@@ -1,0 +1,16 @@
+// Base style cho khu admin (áp cho mọi trang dưới /admin).
+@use 'tokens' as *;
+
+.adminPage {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+}
+
+// Khối card dùng lại nhanh ở các trang admin.
+.adminCard {
+  @include card;
+  padding: $space-5;
+}

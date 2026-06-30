@@ -25,7 +25,7 @@ CREATE TABLE admins (
   full_name     VARCHAR(100)    NOT NULL,
   email         VARCHAR(150)    DEFAULT NULL,
   role          ENUM('super_admin','sales') NOT NULL DEFAULT 'sales',
-  is_active     TINYINT(1)      NOT NULL DEFAULT 1,
+  is_active     TINYINT      NOT NULL DEFAULT 1,
   last_login_at DATETIME        DEFAULT NULL,
   created_at    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -48,7 +48,7 @@ CREATE TABLE categories (
   description      TEXT            DEFAULT NULL,
   image            VARCHAR(255)    DEFAULT NULL,
   sort_order       INT             NOT NULL DEFAULT 0,
-  is_active        TINYINT(1)      NOT NULL DEFAULT 1,
+  is_active        TINYINT      NOT NULL DEFAULT 1,
   -- SEO riêng cho từng danh mục
   meta_title       VARCHAR(255)    DEFAULT NULL,
   meta_description VARCHAR(500)    DEFAULT NULL,
@@ -64,6 +64,11 @@ CREATE TABLE categories (
   CONSTRAINT fk_categories_parent FOREIGN KEY (parent_id)
     REFERENCES categories (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE categories
+  ADD COLUMN deleted_at DATETIME DEFAULT NULL AFTER updated_at,
+  ADD KEY idx_categories_deleted (deleted_at);
+
 
 
 -- =====================================================================
@@ -86,9 +91,9 @@ CREATE TABLE products (
   content           LONGTEXT        DEFAULT NULL,    -- mô tả chi tiết (HTML: header, in đậm, gạch đầu dòng, ảnh)
   -- Tab "Kết quả thử nghiệm": phần text/HTML (có thể chèn ảnh inline). Nhiều video/ảnh -> bảng product_test_media
   test_result          LONGTEXT     DEFAULT NULL,    -- nội dung HTML, có thể chèn ảnh/text/header
-  is_new            TINYINT(1)      NOT NULL DEFAULT 0,
-  is_featured       TINYINT(1)      NOT NULL DEFAULT 0,
-  is_active         TINYINT(1)      NOT NULL DEFAULT 1,
+  is_new            TINYINT      NOT NULL DEFAULT 0,
+  is_featured       TINYINT      NOT NULL DEFAULT 0,
+  is_active         TINYINT      NOT NULL DEFAULT 1,
   views             INT UNSIGNED    NOT NULL DEFAULT 0,
   sort_order        INT             NOT NULL DEFAULT 0,
   meta_title        VARCHAR(255)    DEFAULT NULL,
@@ -116,7 +121,7 @@ CREATE TABLE product_images (
   product_id BIGINT UNSIGNED NOT NULL,
   image_path VARCHAR(255)    NOT NULL,
   alt_text   VARCHAR(255)    DEFAULT NULL,
-  is_primary TINYINT(1)      NOT NULL DEFAULT 0,
+  is_primary TINYINT      NOT NULL DEFAULT 0,
   sort_order INT             NOT NULL DEFAULT 0,
   PRIMARY KEY (id),
   KEY idx_pimages_product (product_id),
@@ -138,7 +143,7 @@ CREATE TABLE attributes (
   name       VARCHAR(100)    NOT NULL,    -- vd: "Vật liệu"
   unit       VARCHAR(30)     DEFAULT NULL,-- đơn vị gợi ý, vd "mm" (tùy chọn)
   sort_order INT             NOT NULL DEFAULT 0,
-  is_active  TINYINT(1)      NOT NULL DEFAULT 1,
+  is_active  TINYINT      NOT NULL DEFAULT 1,
   created_at DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   UNIQUE KEY uq_attributes_name (name),
@@ -200,7 +205,7 @@ CREATE TABLE news (
   content          LONGTEXT        DEFAULT NULL,
   author_id        BIGINT UNSIGNED DEFAULT NULL,
   views            INT UNSIGNED    NOT NULL DEFAULT 0,
-  is_active        TINYINT(1)      NOT NULL DEFAULT 1,
+  is_active        TINYINT      NOT NULL DEFAULT 1,
   published_at     DATETIME        DEFAULT NULL,
   meta_title       VARCHAR(255)    DEFAULT NULL,
   meta_description VARCHAR(500)    DEFAULT NULL,
@@ -226,7 +231,7 @@ CREATE TABLE pages (
   title            VARCHAR(255)    NOT NULL,
   slug             VARCHAR(280)    NOT NULL,        -- vd: gioi-thieu, chinh-sach-bao-mat
   content          LONGTEXT        DEFAULT NULL,
-  is_active        TINYINT(1)      NOT NULL DEFAULT 1,
+  is_active        TINYINT      NOT NULL DEFAULT 1,
   meta_title       VARCHAR(255)    DEFAULT NULL,
   meta_description VARCHAR(500)    DEFAULT NULL,
   meta_keywords    VARCHAR(500)    DEFAULT NULL,
@@ -249,7 +254,7 @@ CREATE TABLE banners (
   link_url   VARCHAR(255)    DEFAULT NULL,
   position   VARCHAR(50)     NOT NULL DEFAULT 'home_slider', -- vị trí hiển thị
   sort_order INT             NOT NULL DEFAULT 0,
-  is_active  TINYINT(1)      NOT NULL DEFAULT 1,
+  is_active  TINYINT      NOT NULL DEFAULT 1,
   created_at DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   KEY idx_banners_pos (position, is_active, sort_order)
@@ -267,7 +272,7 @@ CREATE TABLE videos (
   youtube_url VARCHAR(255)    NOT NULL,
   position    SET('home','sidebar','about') NOT NULL DEFAULT 'home',
   sort_order  INT             NOT NULL DEFAULT 0,
-  is_active   TINYINT(1)      NOT NULL DEFAULT 1,
+  is_active   TINYINT      NOT NULL DEFAULT 1,
   created_at  DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   KEY idx_videos_active (is_active, sort_order)
@@ -284,7 +289,7 @@ CREATE TABLE support_contacts (
   zalo       VARCHAR(30)     DEFAULT NULL,
   channel    VARCHAR(50)     DEFAULT 'hotline',
   sort_order INT             NOT NULL DEFAULT 0,
-  is_active  TINYINT(1)      NOT NULL DEFAULT 1,
+  is_active  TINYINT      NOT NULL DEFAULT 1,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -366,7 +371,7 @@ CREATE TABLE redirects (
   from_path   VARCHAR(255)    NOT NULL,   -- đường dẫn cũ, vd: /san-pham-cu
   to_path     VARCHAR(255)    NOT NULL,   -- đường dẫn mới, vd: /san-pham-moi
   status_code SMALLINT        NOT NULL DEFAULT 301,  -- 301 vĩnh viễn / 302 tạm thời
-  is_active   TINYINT(1)      NOT NULL DEFAULT 1,
+  is_active   TINYINT      NOT NULL DEFAULT 1,
   created_at  DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   UNIQUE KEY uq_redirects_from (from_path)
@@ -379,22 +384,27 @@ CREATE TABLE redirects (
 INSERT INTO settings (setting_key, setting_value, setting_group) VALUES
   ('company_name', 'CÔNG TY CỔ PHẦN CEILING VIỆT NAM', 'company'),
   ('tax_code',     '0109128960', 'company'),
-  ('logo',         '/upload/logo.png', 'company'),          -- đường dẫn ảnh logo
-  ('favicon',      '/upload/favicon.ico', 'company'),       -- icon trên tab trình duyệt
+  ('logo',         '', 'company'),                          -- URL Cloudinary (upload qua admin)
+  ('favicon',      '', 'company'),                           -- URL Cloudinary (upload qua admin)
+  ('logo_public_id',    '', 'company'),                      -- public_id để xóa ảnh cũ khi đổi
+  ('favicon_public_id', '', 'company'),
   ('hotline',      '0844 444 933', 'contact'),
   ('email',        'vietnamceiling@gmail.com', 'contact'),
-  ('address',      'NO11D - LK37 Khu đất dịch vụ Vạn Phúc - Hà Đông - TP. Hà Nội', 'contact'), -- địa chỉ đầy đủ 1 dòng (hiển thị nhanh)
-  -- Địa chỉ chi tiết (tách từng phần để dễ nhập/lọc/ghép)
-  ('addr_number',   'NO11D - LK37', 'address'),                 -- số nhà / lô
-  ('addr_street',   'Khu đất dịch vụ Vạn Phúc', 'address'),     -- tên đường / khu
-  ('addr_district', 'Hà Đông', 'address'),                      -- quận / huyện
-  ('addr_province', 'TP. Hà Nội', 'address'),                   -- tỉnh / thành phố
   ('zalo',         '0844444933', 'contact'),
-  -- Bản đồ: dùng 1 trong 2 cách dưới đây
-  ('map_embed',    '', 'map'),     -- CÁCH 1: dán mã nhúng iframe từ Google Maps (không cần API key)
-  ('map_lat',      '', 'map'),     -- CÁCH 2: vĩ độ  (vd: 20.9712)
-  ('map_lng',      '', 'map'),     -- CÁCH 2: kinh độ (vd: 105.7782)
-  ('map_link',     '', 'map');     -- link mở Google Maps khi bấm "Chỉ đường"
+  ('address',      'NO11D - LK37 Khu đất dịch vụ Vạn Phúc - Hà Đông - TP. Hà Nội', 'address'), -- địa chỉ đầy đủ (admin lưu sẽ tự gộp lại)
+  -- Địa chỉ chi tiết: chọn theo cây hành chính (Tỉnh→Quận/Huyện→Phường/Xã) + nhập chi tiết; FE gộp thành `address`
+  ('addr_detail',   'NO11D - LK37 Khu đất dịch vụ Vạn Phúc', 'address'), -- số nhà, tên đường
+  ('addr_ward',     '', 'address'),             -- phường / xã  (chọn qua API địa chỉ)
+  ('addr_district', 'Hà Đông', 'address'),      -- quận / huyện
+  ('addr_province', 'TP. Hà Nội', 'address'),   -- tỉnh / thành phố
+  -- Mã hành chính (không public) để admin load lại đúng lựa chọn khi mở sửa
+  ('addr_province_code', '', 'address'),
+  ('addr_district_code', '', 'address'),
+  ('addr_ward_code',     '', 'address'),
+  -- Bản đồ: admin dán 1 link Google Maps (vd https://maps.app.goo.gl/...),
+  -- BE giải link → tự sinh map_embed (link nhúng) để FE render iframe
+  ('map_link',     '', 'map'),
+  ('map_embed',    '', 'map');
 
 -- Liên kết mạng xã hội (hiện ở header/footer)
 INSERT INTO settings (setting_key, setting_value, setting_group) VALUES

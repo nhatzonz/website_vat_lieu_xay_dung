@@ -1,0 +1,55 @@
+@use 'tokens' as *;
+
+.stack {
+  position: fixed;
+  bottom: $space-5;
+  right: $space-5;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  min-width: 260px;
+  max-width: 380px;
+  padding: $space-3 $space-4;
+  border-radius: $radius;
+  background: $bg;
+  color: $text;
+  font-size: 14px;
+  box-shadow: $shadow, inset 4px 0 0 $border-strong;
+  cursor: pointer;
+  animation: slide 0.18s ease;
+}
+
+.success {
+  box-shadow: $shadow, inset 4px 0 0 $success;
+  svg {
+    color: $success;
+  }
+}
+
+.error {
+  box-shadow: $shadow, inset 4px 0 0 $danger;
+  svg {
+    color: $danger;
+  }
+}
+
+.info {
+  box-shadow: $shadow, inset 4px 0 0 $info;
+  svg {
+    color: $info;
+  }
+}
+
+@keyframes slide {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+}

@@ -1,0 +1,79 @@
+@use 'tokens' as *;
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-2;
+  border: 1px solid transparent;
+  border-radius: $radius;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.md {
+  padding: 0 $space-4;
+  height: 40px;
+  font-size: 14px;
+}
+
+.sm {
+  padding: 0 $space-3;
+  height: 32px;
+  font-size: 13px;
+}
+
+.primary {
+  background: $primary;
+  color: $text;
+
+  &:not(:disabled):hover {
+    background: $primary-dark;
+  }
+}
+
+.secondary {
+  background: $bg;
+  color: $text;
+  border-color: $border-strong;
+
+  &:not(:disabled):hover {
+    background: $bg-soft;
+  }
+}
+
+.danger {
+  background: $danger;
+  color: #fff;
+
+  &:not(:disabled):hover {
+    background: $danger-dark;
+  }
+}
+
+.ghost {
+  background: transparent;
+  color: $text-muted;
+
+  &:not(:disabled):hover {
+    background: $bg-soft;
+    color: $text;
+  }
+}
+
+.spin {
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

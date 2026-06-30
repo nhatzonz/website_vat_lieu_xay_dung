@@ -1,0 +1,90 @@
+@use 'tokens' as *;
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 600;
+  color: $text;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: $space-4;
+}
+
+.preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 140px;
+  height: 80px;
+  flex-shrink: 0;
+  padding: $space-2;
+  border: 1px dashed $border-strong;
+  border-radius: $radius;
+  background: $bg-muted;
+  overflow: hidden;
+
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+}
+
+// Khi CÓ ảnh: nền ô caro để thấy vùng trong suốt của ảnh.
+.hasImage {
+  background-image:
+    linear-gradient(45deg, #eee 25%, transparent 25%),
+    linear-gradient(-45deg, #eee 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #eee 75%),
+    linear-gradient(-45deg, transparent 75%, #eee 75%);
+  background-size: 14px 14px;
+  background-position: 0 0, 0 7px, 7px -7px, -7px 0;
+}
+
+.favicon {
+  width: 80px;
+  height: 80px;
+}
+
+// Ảnh chia sẻ MXH: tỉ lệ ~1.91:1 (1200×630).
+.og {
+  width: 200px;
+  height: 105px;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: $text-muted;
+
+  svg {
+    color: $border-strong;
+  }
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+}
+
+.hint {
+  font-size: 12px;
+  color: $text-muted;
+}
+
+.error {
+  font-size: 12px;
+  color: $danger;
+}

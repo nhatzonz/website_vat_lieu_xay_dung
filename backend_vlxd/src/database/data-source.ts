@@ -17,7 +17,7 @@ export default new DataSource({
   port: parseInt(process.env.DB_PORT ?? '3306', 10),
   username: process.env.DB_USERNAME ?? 'root',
   password: process.env.DB_PASSWORD ?? '',
-  database: process.env.DB_DATABASE ?? 'vlxd',
+  database: process.env.DB_DATABASE ?? 'ceiling_db',
   charset: 'utf8mb4',
   timezone: 'Z',
   // Nạp mọi entity trong src — thêm module mới không cần sửa file này.
