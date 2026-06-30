@@ -1,0 +1,215 @@
+@use 'tokens' as *;
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-3;
+  flex-wrap: wrap;
+}
+
+.saving {
+  color: $primary;
+  font-style: italic;
+  font-size: 13px;
+}
+
+// --- Tabs theo vị trí ---
+.tabs {
+  display: flex;
+  gap: $space-2;
+  flex-wrap: wrap;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  padding: $space-2 $space-4;
+  border: 1px solid $border;
+  border-radius: 999px;
+  background: $bg;
+  font-size: 14px;
+  font-weight: 600;
+  color: $text-muted;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: $primary;
+    color: $text;
+  }
+}
+
+.tabActive {
+  background: $primary;
+  border-color: $primary;
+  color: #fff;
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+.tabCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.12);
+  font-size: 12px;
+}
+
+// --- Danh sách banner ---
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.card {
+  @include card;
+  display: flex;
+  align-items: center;
+  gap: $space-4;
+  padding: $space-3 $space-4;
+  transition: box-shadow 0.15s ease;
+}
+
+.grip {
+  color: $border-strong;
+  cursor: grab;
+  flex-shrink: 0;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.thumb {
+  width: 160px;
+  height: 72px;
+  flex-shrink: 0;
+  border-radius: $radius;
+  overflow: hidden;
+  background: $bg-muted;
+  border: 1px solid $border;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title {
+  font-weight: 600;
+  color: $text;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.muted {
+  color: $text-muted;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: $primary-darker;
+  font-family: ui-monospace, monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  flex-shrink: 0;
+}
+
+.actions {
+  display: inline-flex;
+  gap: $space-2;
+  flex-shrink: 0;
+}
+
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid $border;
+  border-radius: $radius;
+  background: $bg;
+  color: $text-muted;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    background: $primary-soft;
+    color: $text;
+    border-color: $primary;
+  }
+}
+
+.danger:hover {
+  background: #fef2f2;
+  color: $danger;
+  border-color: #fecaca;
+}
+
+// Hàng đang kéo / là đích thả.
+.dragging {
+  opacity: 0.4;
+}
+
+.dropTarget {
+  box-shadow: inset 0 2px 0 0 $primary;
+}
+
+.empty {
+  @include card;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-4;
+  padding: $space-6;
+  color: $text-muted;
+
+  p {
+    margin: 0;
+  }
+}
+
+.error {
+  @include card;
+  padding: $space-5;
+  color: $danger-dark;
+  background: #fef2f2;
+  border-color: #fecaca;
+}

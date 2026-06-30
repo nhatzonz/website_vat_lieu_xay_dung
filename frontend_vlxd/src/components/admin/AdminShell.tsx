@@ -1,6 +1,12 @@
 'use client';
 
-import { FolderTree, LayoutDashboard, LogOut, Settings } from 'lucide-react';
+import {
+  FolderTree,
+  GalleryHorizontalEnd,
+  LayoutDashboard,
+  LogOut,
+  Settings,
+} from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import type { ReactNode } from 'react';
@@ -13,6 +19,7 @@ import styles from './AdminShell.module.scss';
 const NAV = [
   { href: '/admin', label: 'Tổng quan', icon: LayoutDashboard, exact: true },
   { href: '/admin/categories', label: 'Danh mục', icon: FolderTree },
+  { href: '/admin/banners', label: 'Banner', icon: GalleryHorizontalEnd },
   { href: '/admin/settings', label: 'Cấu hình', icon: Settings },
 ];
 

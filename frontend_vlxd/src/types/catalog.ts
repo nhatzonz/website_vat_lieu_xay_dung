@@ -3,6 +3,16 @@
  * GET /public/categories (cây) và GET /public/categories/:slug.
  */
 
+/** Banner công khai (GET /public/banners). */
+export interface PublicBanner {
+  id: number;
+  title: string | null;
+  image: string;
+  linkUrl: string | null;
+  position: string;
+  sortOrder: number;
+}
+
 /** Node danh mục công khai; `children` có khi lấy từ cây/chi tiết. */
 export interface PublicCategory {
   id: number;

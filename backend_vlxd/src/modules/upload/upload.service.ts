@@ -8,6 +8,7 @@ import {
 import type { UploadApiResponse } from 'cloudinary';
 import sharp from 'sharp';
 import { CLOUDINARY, type CloudinaryApi } from './cloudinary.provider';
+import { publicIdFromUrl } from './cloudinary-url';
 import {
   ALLOWED_MIME,
   IMAGE_PRESETS,
@@ -67,6 +68,14 @@ export class UploadService {
     const preset = IMAGE_PRESETS[kind];
     const optimized = await this.optimize(file.buffer, preset);
     return this.uploadBuffer(optimized, preset);
+  }
+
+  /**
+   * Xóa ảnh Cloudinary theo URL (tự bóc public_id). Tiện cho các bảng chỉ lưu
+   * URL (banners, categories). Bỏ qua an toàn nếu URL không phải của Cloudinary.
+   */
+  async destroyByUrl(url: string | null | undefined): Promise<void> {
+    await this.destroy(publicIdFromUrl(url));
   }
 
   /** Xóa ảnh Cloudinary theo public_id (an toàn: bỏ qua nếu trống/lỗi). */

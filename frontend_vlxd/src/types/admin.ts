@@ -82,6 +82,46 @@ export interface ReorderItem {
 
 export type BulkCategoryAction = 'activate' | 'deactivate' | 'delete';
 
+// ---------- Banners ----------
+
+/**
+ * Vị trí hiển thị banner — khớp BANNER_POSITIONS ở backend.
+ * Tạm ẩn 'home_banner' (Banner phụ trang chủ) vì chưa dùng tới; bỏ comment để
+ * bật lại. Backend vẫn chấp nhận giá trị này nên không mất dữ liệu.
+ */
+export const BANNER_POSITIONS = [
+  { value: 'home_slider', label: 'Slider trang chủ' },
+  // { value: 'home_banner', label: 'Banner phụ trang chủ' },
+  { value: 'sidebar', label: 'Cột bên' },
+] as const;
+
+export type BannerPosition = (typeof BANNER_POSITIONS)[number]['value'];
+
+export function bannerPositionLabel(value: string): string {
+  return BANNER_POSITIONS.find((p) => p.value === value)?.label ?? value;
+}
+
+export interface Banner {
+  id: number;
+  title: string | null;
+  image: string;
+  linkUrl: string | null;
+  position: string;
+  sortOrder: number;
+  isActive: boolean;
+  createdAt: string;
+}
+
+/** Body POST/PUT /admin/banners (field optional cho update). */
+export interface BannerInput {
+  title?: string;
+  image: string;
+  linkUrl?: string;
+  position?: BannerPosition;
+  sortOrder?: number;
+  isActive?: boolean;
+}
+
 /** Body POST/PUT /admin/categories (field optional cho update). */
 export interface CategoryInput {
   name: string;

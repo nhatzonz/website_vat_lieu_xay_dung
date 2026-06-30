@@ -8,6 +8,7 @@ import { RolesGuard } from './common/guards/roles.guard';
 import { DatabaseModule } from './database/database.module';
 import { AdminsModule } from './modules/admins/admins.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { BannersModule } from './modules/banners/banners.module';
 import { CategoriesModule } from './modules/categories/categories.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { HealthModule } from './modules/health/health.module';
@@ -35,6 +36,7 @@ import { UploadModule } from './modules/upload/upload.module';
     HealthModule,
     SettingsModule,
     CategoriesModule,
+    BannersModule,
     UploadModule,
     // Các module nghiệp vụ tiếp theo (products, news...) thêm vào đây.
   ],

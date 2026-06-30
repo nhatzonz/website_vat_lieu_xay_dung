@@ -7,6 +7,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, IsNull, Not, QueryFailedError, Repository } from 'typeorm';
 import { uniqueSlug } from '../../common/util/slugify';
+import { UploadService } from '../upload/upload.service';
 import { Category } from './category.entity';
 import { BulkCategoriesDto } from './dto/bulk-categories.dto';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -36,6 +37,7 @@ export class CategoriesService {
   constructor(
     @InjectRepository(Category)
     private readonly categories: Repository<Category>,
+    private readonly upload: UploadService,
   ) {}
 
   /**
@@ -132,6 +134,8 @@ export class CategoriesService {
 
   async update(id: number, dto: UpdateCategoryDto): Promise<Category> {
     const category = await this.findById(id);
+    const oldImage = category.image;
+    const oldOgImage = category.ogImage;
 
     if (dto.parentId !== undefined) {
       const nextParent = dto.parentId ?? null;
@@ -144,7 +148,16 @@ export class CategoriesService {
     }
 
     Object.assign(category, this.mapDto(dto, false));
-    return this.categories.save(category);
+    const saved = await this.categories.save(category);
+
+    // Đổi/gỡ ảnh → dọn ảnh cũ trên Cloudinary (chỉ khi field được gửi & khác).
+    if (dto.image !== undefined && oldImage && oldImage !== saved.image) {
+      await this.upload.destroyByUrl(oldImage);
+    }
+    if (dto.ogImage !== undefined && oldOgImage && oldOgImage !== saved.ogImage) {
+      await this.upload.destroyByUrl(oldOgImage);
+    }
+    return saved;
   }
 
   /**
@@ -211,6 +224,10 @@ export class CategoriesService {
       }
       throw err;
     }
+
+    // Xóa vĩnh viễn thành công → dọn ảnh trên Cloudinary.
+    await this.upload.destroyByUrl(category.image);
+    await this.upload.destroyByUrl(category.ogImage);
   }
 
   /**
