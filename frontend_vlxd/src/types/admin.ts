@@ -67,7 +67,20 @@ export interface Category {
   canonicalUrl: string | null;
   createdAt: string;
   updatedAt: string;
+  /** Có khi gọi GET /admin/categories: số sản phẩm trực tiếp thuộc danh mục. */
+  productCount?: number;
+  /** Có ở thùng rác (GET /admin/categories/trash): thời điểm xóa mềm. */
+  deletedAt?: string | null;
 }
+
+/** 1 dòng trong PATCH /admin/categories/reorder. */
+export interface ReorderItem {
+  id: number;
+  sortOrder: number;
+  parentId?: number | null;
+}
+
+export type BulkCategoryAction = 'activate' | 'deactivate' | 'delete';
 
 /** Body POST/PUT /admin/categories (field optional cho update). */
 export interface CategoryInput {

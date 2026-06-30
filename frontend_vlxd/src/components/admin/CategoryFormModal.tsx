@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { adminApi, AdminApiError } from '@/lib/admin-api';
 import { descendantIds, flattenTree } from '@/lib/category-tree';
 import type { Category, CategoryInput } from '@/types/admin';
+import { InlineImageField } from './InlineImageField';
 import { Button } from './ui/Button';
 import { SelectField, Switch, TextArea, TextField } from './ui/Field';
 import { Modal } from './ui/Modal';
@@ -34,6 +35,9 @@ interface FormState {
   ogImage: string;
   canonicalUrl: string;
 }
+
+/** Tạm ẩn khối SEO (chưa dùng tới). Đổi thành true để bật lại. */
+const SHOW_SEO = false;
 
 const EMPTY: FormState = {
   name: '',
@@ -215,12 +219,12 @@ export function CategoryFormModal({
           />
         </div>
 
-        <TextField
-          id="cat-image"
-          label="Ảnh danh mục (URL)"
-          placeholder="https://..."
+        <InlineImageField
+          label="Ảnh danh mục"
+          kind="category"
           value={form.image}
-          onChange={(e) => set('image', e.target.value)}
+          hint="JPEG/PNG/WebP, tối đa 8MB. Ảnh sẽ được nén & tối ưu tự động."
+          onChange={(url) => set('image', url)}
         />
 
         <TextArea
@@ -237,15 +241,17 @@ export function CategoryFormModal({
           label="Hiển thị danh mục"
         />
 
-        <button
-          type="button"
-          className={styles.seoToggle}
-          onClick={() => setShowSeo((s) => !s)}
-        >
-          {showSeo ? '▾' : '▸'} Tùy chọn SEO
-        </button>
+        {SHOW_SEO && (
+          <button
+            type="button"
+            className={styles.seoToggle}
+            onClick={() => setShowSeo((s) => !s)}
+          >
+            {showSeo ? '▾' : '▸'} Tùy chọn SEO
+          </button>
+        )}
 
-        {showSeo && (
+        {SHOW_SEO && showSeo && (
           <div className={styles.seo}>
             <TextField
               id="cat-mtitle"
@@ -266,20 +272,19 @@ export function CategoryFormModal({
               value={form.metaKeywords}
               onChange={(e) => set('metaKeywords', e.target.value)}
             />
-            <div className={styles.row}>
-              <TextField
-                id="cat-og"
-                label="OG image (URL)"
-                value={form.ogImage}
-                onChange={(e) => set('ogImage', e.target.value)}
-              />
-              <TextField
-                id="cat-canon"
-                label="Canonical URL"
-                value={form.canonicalUrl}
-                onChange={(e) => set('canonicalUrl', e.target.value)}
-              />
-            </div>
+            <InlineImageField
+              label="OG image (ảnh chia sẻ MXH)"
+              kind="og"
+              value={form.ogImage}
+              hint="Chuẩn 1200×630. Hiện khi chia sẻ lên Facebook/Zalo."
+              onChange={(url) => set('ogImage', url)}
+            />
+            <TextField
+              id="cat-canon"
+              label="Canonical URL"
+              value={form.canonicalUrl}
+              onChange={(e) => set('canonicalUrl', e.target.value)}
+            />
           </div>
         )}
       </form>

@@ -5,10 +5,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Not, QueryFailedError, Repository } from 'typeorm';
+import { In, IsNull, Not, QueryFailedError, Repository } from 'typeorm';
 import { uniqueSlug } from '../../common/util/slugify';
 import { Category } from './category.entity';
+import { BulkCategoriesDto } from './dto/bulk-categories.dto';
 import { CreateCategoryDto } from './dto/create-category.dto';
+import { ReorderCategoriesDto } from './dto/reorder-categories.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
 export interface CategoryNode extends Category {
@@ -17,6 +19,11 @@ export interface CategoryNode extends Category {
 
 export interface CategoryWithChildren extends Category {
   children: Category[];
+}
+
+/** Bản ghi danh mục cho bảng quản trị, kèm số sản phẩm trực tiếp thuộc nó. */
+export interface CategoryWithCount extends Category {
+  productCount: number;
 }
 
 /** Độ sâu tối đa của cây danh mục (gốc = cấp 1). */
@@ -45,9 +52,43 @@ export class CategoriesService {
     return this.buildTree(all);
   }
 
-  /** Danh sách phẳng cho bảng quản trị. */
-  findAll(): Promise<Category[]> {
-    return this.categories.find({ order: { sortOrder: 'ASC', name: 'ASC' } });
+  /** Danh sách phẳng cho bảng quản trị, kèm số sản phẩm trực tiếp mỗi danh mục. */
+  async findAll(): Promise<CategoryWithCount[]> {
+    const all = await this.categories.find({
+      order: { sortOrder: 'ASC', name: 'ASC' },
+    });
+    const counts = await this.productCounts();
+    return all.map((c) => ({ ...c, productCount: counts.get(c.id) ?? 0 }));
+  }
+
+  /** Danh mục trong thùng rác (đã xóa mềm), mới xóa lên trước. */
+  findTrashed(): Promise<Category[]> {
+    return this.categories.find({
+      where: { deletedAt: Not(IsNull()) },
+      withDeleted: true,
+      order: { deletedAt: 'DESC' },
+    });
+  }
+
+  /**
+   * Số sản phẩm trực tiếp theo từng danh mục (category_id). Truy vấn thẳng bảng
+   * `products` để không phụ thuộc module sản phẩm (chưa có). Bảng chưa tồn tại
+   * thì coi như tất cả bằng 0.
+   */
+  private async productCounts(): Promise<Map<number, number>> {
+    const map = new Map<number, number>();
+    try {
+      const rows: Array<{ categoryId: number | string; cnt: number | string }> =
+        await this.categories.manager.query(
+          'SELECT category_id AS categoryId, COUNT(*) AS cnt FROM products GROUP BY category_id',
+        );
+      for (const r of rows) {
+        map.set(Number(r.categoryId), Number(r.cnt));
+      }
+    } catch {
+      // Bảng products chưa tồn tại / chưa seed → bỏ qua, trả map rỗng.
+    }
+    return map;
   }
 
   /**
@@ -107,15 +148,51 @@ export class CategoriesService {
   }
 
   /**
-   * Xóa an toàn:
-   *  - Còn danh mục con  → 409 (tránh CASCADE xóa nhầm cả cây con).
-   *  - Còn sản phẩm liên kết → DB chặn (RESTRICT) → bắt lại thành 409 sạch.
+   * Xóa MỀM (đưa vào thùng rác). An toàn:
+   *  - Còn danh mục con (chưa xóa) → 409 (tránh để con mồ côi cha bị ẩn).
+   * Sản phẩm liên kết KHÔNG chặn xóa mềm (vẫn khôi phục được), nhưng danh mục
+   * đã xóa mềm bị loại khỏi cây/công khai nên không còn hiển thị sản phẩm.
    */
   async remove(id: number): Promise<void> {
     await this.findById(id);
+    await this.assertNoChildren(id);
+    await this.categories.softDelete(id);
+  }
+
+  /** Khôi phục danh mục từ thùng rác. */
+  async restore(id: number): Promise<Category> {
+    const category = await this.categories.findOne({
+      where: { id },
+      withDeleted: true,
+    });
+    if (!category) {
+      throw new NotFoundException('Không tìm thấy danh mục');
+    }
+    if (!category.deletedAt) {
+      return category; // chưa bị xóa → không cần làm gì
+    }
+    await this.categories.restore(id);
+    category.deletedAt = null;
+    return category;
+  }
+
+  /**
+   * Xóa VĨNH VIỄN khỏi DB. An toàn:
+   *  - Còn danh mục con (kể cả đã xóa mềm) → 409.
+   *  - Còn sản phẩm liên kết → DB chặn (RESTRICT) → bắt lại thành 409 sạch.
+   */
+  async forceRemove(id: number): Promise<void> {
+    const category = await this.categories.findOne({
+      where: { id },
+      withDeleted: true,
+    });
+    if (!category) {
+      throw new NotFoundException('Không tìm thấy danh mục');
+    }
 
     const childCount = await this.categories.count({
       where: { parentId: id },
+      withDeleted: true,
     });
     if (childCount > 0) {
       throw new ConflictException(
@@ -130,15 +207,79 @@ export class CategoriesService {
         err instanceof QueryFailedError &&
         (err.driverError as { errno?: number })?.errno === ER_ROW_IS_REFERENCED
       ) {
-        throw new ConflictException(
-          'Danh mục còn sản phẩm, không thể xóa',
-        );
+        throw new ConflictException('Danh mục còn sản phẩm, không thể xóa');
       }
       throw err;
     }
   }
 
+  /**
+   * Cập nhật hàng loạt thứ tự (+ cha mới khi kéo sang nhánh khác). Mỗi item
+   * được kiểm tra hợp lệ về cha (chống chu trình/độ sâu) trước khi lưu.
+   */
+  async reorder(dto: ReorderCategoriesDto): Promise<void> {
+    if (dto.items.length === 0) return;
+
+    const ids = dto.items.map((i) => i.id);
+    const existing = await this.categories.find({ where: { id: In(ids) } });
+    const byId = new Map(existing.map((c) => [c.id, c]));
+
+    for (const item of dto.items) {
+      const category = byId.get(item.id);
+      if (!category) {
+        throw new NotFoundException(`Không tìm thấy danh mục #${item.id}`);
+      }
+      if (item.parentId !== undefined) {
+        const nextParent = item.parentId ?? null;
+        if (nextParent !== category.parentId) {
+          await this.assertParentValid(nextParent, item.id);
+          category.parentId = nextParent;
+        }
+      }
+      category.sortOrder = item.sortOrder;
+    }
+
+    await this.categories.save([...byId.values()]);
+  }
+
+  /** Thao tác hàng loạt: bật/ẩn hiển thị, hoặc xóa mềm nhiều danh mục. */
+  async bulk(dto: BulkCategoriesDto): Promise<{ affected: number }> {
+    const ids = [...new Set(dto.ids)];
+    if (ids.length === 0) return { affected: 0 };
+
+    if (dto.action === 'activate' || dto.action === 'deactivate') {
+      const res = await this.categories.update(
+        { id: In(ids) },
+        { isActive: dto.action === 'activate' },
+      );
+      return { affected: res.affected ?? 0 };
+    }
+
+    // action === 'delete' (xóa mềm). Chặn nếu bất kỳ mục nào còn con NGOÀI tập chọn.
+    const blocked = await this.categories.find({
+      where: { parentId: In(ids) },
+      select: { id: true, parentId: true },
+    });
+    const offending = blocked.find((c) => !ids.includes(c.parentId as number));
+    if (offending) {
+      throw new ConflictException(
+        'Một số danh mục còn danh mục con ngoài danh sách đã chọn, không thể xóa',
+      );
+    }
+    const res = await this.categories.softDelete({ id: In(ids) });
+    return { affected: res.affected ?? 0 };
+  }
+
   // ---- helpers ----
+
+  private async assertNoChildren(id: number): Promise<void> {
+    const childCount = await this.categories.count({ where: { parentId: id } });
+    if (childCount > 0) {
+      throw new ConflictException(
+        'Danh mục còn danh mục con, hãy xóa hoặc chuyển chúng trước',
+      );
+    }
+  }
 
   private mapDto(
     dto: CreateCategoryDto | UpdateCategoryDto,

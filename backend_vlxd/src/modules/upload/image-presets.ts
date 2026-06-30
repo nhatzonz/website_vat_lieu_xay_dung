@@ -7,6 +7,7 @@ export type ImageKind =
   | 'favicon'
   | 'og'
   | 'banner'
+  | 'category'
   | 'product'
   | 'content'
   | 'generic';
@@ -32,6 +33,7 @@ export const IMAGE_PRESETS: Record<ImageKind, ImagePreset> = {
   // Ảnh chia sẻ MXH (og:image): chuẩn 1200×630, JPEG để MXH render ổn định.
   og: { folder: 'vlxd/seo', maxWidth: 1200, maxHeight: 630, fit: 'cover', format: 'jpeg', quality: 85 },
   banner: { folder: 'vlxd/banners', maxWidth: 1920, fit: 'inside', format: 'webp', quality: 80 },
+  category: { folder: 'vlxd/categories', maxWidth: 800, fit: 'inside', format: 'webp', quality: 82 },
   product: { folder: 'vlxd/products', maxWidth: 1200, fit: 'inside', format: 'webp', quality: 82 },
   content: { folder: 'vlxd/content', maxWidth: 1600, fit: 'inside', format: 'webp', quality: 80 },
   generic: { folder: 'vlxd/uploads', maxWidth: 1600, fit: 'inside', format: 'webp', quality: 80 },

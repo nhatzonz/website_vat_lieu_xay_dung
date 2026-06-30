@@ -1,4 +1,4 @@
-import type { Category } from '@/types/admin';
+import type { Category, ReorderItem } from '@/types/admin';
 
 export interface FlatCategoryRow {
   category: Category;
@@ -36,6 +36,37 @@ export function flattenTree(all: Category[]): FlatCategoryRow[] {
   };
   walk(null, 0);
   return rows;
+}
+
+/**
+ * Tính lại thứ tự sau khi kéo `draggedId` thả vào vị trí của `targetId`.
+ * Chỉ cho phép sắp xếp giữa các mục CÙNG CHA (kéo sang cấp khác → trả null,
+ * tránh thay đổi cấu trúc ngoài ý muốn). Trả về danh sách `sortOrder` mới cho
+ * toàn bộ anh em của nhánh đó (0,1,2,…), để gửi PATCH /admin/categories/reorder.
+ */
+export function computeReorder(
+  all: Category[],
+  draggedId: number,
+  targetId: number,
+): ReorderItem[] | null {
+  const dragged = all.find((c) => c.id === draggedId);
+  const target = all.find((c) => c.id === targetId);
+  if (!dragged || !target) return null;
+
+  const parentId = dragged.parentId;
+  if (parentId !== target.parentId) return null; // khác cấp → từ chối
+
+  const siblings = sortCats(all.filter((c) => c.parentId === parentId)).map(
+    (c) => c.id,
+  );
+  const from = siblings.indexOf(draggedId);
+  const to = siblings.indexOf(targetId);
+  if (from === -1 || to === -1 || from === to) return null;
+
+  siblings.splice(from, 1);
+  siblings.splice(to, 0, draggedId);
+
+  return siblings.map((id, index) => ({ id, sortOrder: index }));
 }
 
 /** Tập id của node + toàn bộ hậu duệ (chặn chọn làm cha → tạo chu trình). */

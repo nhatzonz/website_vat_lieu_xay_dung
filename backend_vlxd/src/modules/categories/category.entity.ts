@@ -1,6 +1,7 @@
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   Generated,
   Index,
@@ -82,4 +83,12 @@ export class Category {
 
   @UpdateDateColumn({ name: 'updated_at', type: 'datetime' })
   updatedAt: Date;
+
+  /**
+   * Xóa mềm: NULL = còn, có giá trị = đã đưa vào thùng rác.
+   * TypeORM tự loại bản ghi đã xóa mềm khỏi mọi truy vấn find() thông thường;
+   * dùng `withDeleted: true` để lấy lại (trang thùng rác).
+   */
+  @DeleteDateColumn({ name: 'deleted_at', type: 'datetime', nullable: true })
+  deletedAt: Date | null;
 }
