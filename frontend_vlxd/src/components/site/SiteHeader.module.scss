@@ -1,0 +1,123 @@
+@use 'tokens' as *;
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: #fff;
+  box-shadow: $shadow-sm;
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  gap: $space-5;
+  height: 76px;
+}
+
+.brand {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+.logo {
+  height: 52px;
+  width: auto;
+  object-fit: contain;
+}
+
+.brandText {
+  font-size: 22px;
+  font-weight: 800;
+  color: $primary;
+  letter-spacing: 0.5px;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: $space-5;
+  margin-left: auto;
+}
+
+.navItem {
+  position: relative;
+  padding: 6px 2px;
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: $text;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: $primary;
+  }
+}
+
+.navActive {
+  color: $primary;
+
+  // Gạch chân bằng box-shadow (không dùng border-top/left).
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -4px;
+    height: 2px;
+    background: $primary;
+    border-radius: 2px;
+  }
+}
+
+.burger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  width: 40px;
+  height: 40px;
+  border: 1px solid $border;
+  border-radius: $radius;
+  background: #fff;
+  color: $text;
+  cursor: pointer;
+}
+
+// --- Responsive: menu xổ dọc dưới header ---
+@media (max-width: 920px) {
+  .burger {
+    display: inline-flex;
+  }
+
+  .nav {
+    position: absolute;
+    top: 76px;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    margin: 0;
+    background: #fff;
+    box-shadow: $shadow;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease;
+  }
+
+  .navOpen {
+    max-height: 420px;
+  }
+
+  .navItem {
+    padding: 14px $space-4;
+    border-bottom: 1px solid $border;
+  }
+
+  .navActive::after {
+    display: none;
+  }
+}

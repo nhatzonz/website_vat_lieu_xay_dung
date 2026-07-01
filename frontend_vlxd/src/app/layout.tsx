@@ -22,11 +22,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="vi">
-      <body>
-        {/* TODO: Header (logo, menu từ settings) */}
-        <main className="min-h-screen">{children}</main>
-        {/* TODO: Footer (thông tin công ty từ settings) */}
-      </body>
+      {/* Khung Header/Footer đặt ở layout của từng nhóm route:
+          - app/(site)/layout.tsx: giao diện khách (public)
+          - app/admin/layout.tsx: khu quản trị */}
+      <body>{children}</body>
     </html>
   );
 }

@@ -1,13 +1,13 @@
 // Design tokens dùng chung cho toàn FE (mục 7.1 plancode).
-// Tone chủ đạo: #F6B47C (cam đào) + trắng. File chỉ chứa biến + mixin
+// Tone chủ đạo: #F36F3B (cam) + trắng. File chỉ chứa biến + mixin
 // (KHÔNG xuất CSS) nên có thể `@use 'tokens' as *;` ở mọi .module.scss.
 
-// --- Màu thương hiệu ---
-$primary: #f6b47c;
-$primary-dark: #e89b5c;
-$primary-darker: #d6852f;
-$primary-light: #fcd9b8;
-$primary-soft: #fff1e6;
+// --- Màu thương hiệu (màu gốc: #F36F3B) ---
+$primary: #f36f3b;
+$primary-dark: #e05a26;
+$primary-darker: #c24d1e;
+$primary-light: #f8a684;
+$primary-soft: #fef0e9;
 
 // --- Nền & chữ ---
 $bg: #ffffff;

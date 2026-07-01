@@ -62,7 +62,7 @@ export function HeroSlider({ banners }: { banners: PublicBanner[] }) {
       className="relative overflow-hidden rounded-xl bg-gray-100"
       aria-roledescription="carousel"
     >
-      {/* Khung tỉ lệ cố định để không nhảy layout. */}
+      {/* Khung tỉ lệ cố định 16:6 để đồng đều & không nhảy layout. */}
       <div className="relative aspect-[16/6] w-full">
         {banners.map((b, i) => (
           <div
@@ -73,13 +73,25 @@ export function HeroSlider({ banners }: { banners: PublicBanner[] }) {
             aria-hidden={i !== index}
           >
             <SlideLink href={b.linkUrl}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={b.image}
-                alt={b.title ?? 'Banner'}
-                className="h-full w-full object-cover"
-                loading={i === 0 ? 'eager' : 'lazy'}
-              />
+              <div className="relative h-full w-full overflow-hidden">
+                {/* Nền: chính ảnh đó, phóng to + làm mờ để lấp đầy khung
+                    (tránh viền trống khi tỉ lệ ảnh khác 16:6). */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={b.image}
+                  alt=""
+                  aria-hidden
+                  className="absolute inset-0 h-full w-full scale-110 object-cover blur-xl"
+                />
+                {/* Ảnh chính: hiển thị TRỌN VẸN, không cắt, không méo. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={b.image}
+                  alt={b.title ?? 'Banner'}
+                  className="relative h-full w-full object-contain"
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                />
+              </div>
             </SlideLink>
           </div>
         ))}

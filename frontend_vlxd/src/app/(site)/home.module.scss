@@ -1,0 +1,17 @@
+@use 'tokens' as *;
+
+.hero {
+  margin-bottom: $space-6;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: $space-5;
+  align-items: start;
+  padding-bottom: $space-6;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}

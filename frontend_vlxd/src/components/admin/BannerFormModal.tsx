@@ -144,7 +144,7 @@ export function BannerFormModal({
           label="Ảnh banner *"
           kind="banner"
           value={form.image}
-          hint="JPEG/PNG/WebP, tối đa 8MB. Nên dùng ảnh ngang khổ rộng cho slider."
+          hint="Kích thước khuyên dùng: 1920 × 720 px (tỉ lệ 16:6) để lấp đầy khung, không có viền. Ảnh khác tỉ lệ vẫn hiển thị đầy đủ (không bị cắt). JPEG/PNG/WebP, tối đa 8MB."
           onChange={(url) => set('image', url)}
         />
 

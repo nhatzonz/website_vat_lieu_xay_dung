@@ -1,0 +1,79 @@
+@use 'tokens' as *;
+
+.box {
+  border: 1px solid $border;
+  border-radius: $radius;
+  overflow: hidden;
+  background: #fff;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  padding: $space-3 $space-4;
+  background: $primary;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.group {
+  border-bottom: 1px solid $border;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.root {
+  display: block;
+  padding: $space-3 $space-4;
+  font-weight: 700;
+  color: $text;
+  transition: color 0.15s ease, background 0.15s ease;
+
+  &:hover {
+    color: $primary;
+    background: $primary-soft;
+  }
+}
+
+.sub {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 $space-2;
+}
+
+.child {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 7px $space-4 7px $space-5;
+  font-size: 14px;
+  color: $text-muted;
+  transition: color 0.15s ease;
+
+  svg {
+    color: $primary;
+  }
+
+  &:hover {
+    color: $primary;
+  }
+}
+
+.empty {
+  margin: 0;
+  padding: $space-4;
+  color: $text-muted;
+  font-size: 14px;
+}

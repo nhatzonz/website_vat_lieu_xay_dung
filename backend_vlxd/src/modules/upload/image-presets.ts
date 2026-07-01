@@ -32,7 +32,9 @@ export const IMAGE_PRESETS: Record<ImageKind, ImagePreset> = {
   favicon: { folder: 'vlxd/branding', maxWidth: 64, maxHeight: 64, fit: 'cover', format: 'png', quality: 90 },
   // Ảnh chia sẻ MXH (og:image): chuẩn 1200×630, JPEG để MXH render ổn định.
   og: { folder: 'vlxd/seo', maxWidth: 1200, maxHeight: 630, fit: 'cover', format: 'jpeg', quality: 85 },
-  banner: { folder: 'vlxd/banners', maxWidth: 1920, fit: 'inside', format: 'webp', quality: 80 },
+  // Banner slider: GIỮ NGUYÊN toàn bộ ảnh (không cắt), chỉ nén về ≤1920px ngang.
+  // 'inside' = thu nhỏ vừa khung, giữ tỉ lệ → không mất nội dung ở mép ảnh.
+  banner: { folder: 'vlxd/banners', maxWidth: 1920, fit: 'inside', format: 'webp', quality: 82 },
   category: { folder: 'vlxd/categories', maxWidth: 800, fit: 'inside', format: 'webp', quality: 82 },
   product: { folder: 'vlxd/products', maxWidth: 1200, fit: 'inside', format: 'webp', quality: 82 },
   content: { folder: 'vlxd/content', maxWidth: 1600, fit: 'inside', format: 'webp', quality: 80 },

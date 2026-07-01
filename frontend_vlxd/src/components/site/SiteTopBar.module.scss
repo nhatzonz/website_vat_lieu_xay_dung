@@ -1,0 +1,44 @@
+@use 'tokens' as *;
+
+.bar {
+  background: $primary;
+  color: #fff;
+  font-size: 13px;
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: $space-5;
+  height: 38px;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  color: #fff;
+  white-space: nowrap;
+
+  strong {
+    font-weight: 700;
+  }
+
+  &:hover {
+    opacity: 0.85;
+  }
+}
+
+@media (max-width: 640px) {
+  .inner {
+    justify-content: center;
+    gap: $space-3;
+    font-size: 12px;
+  }
+
+  // Ẩn bớt email trên màn hình rất nhỏ để không tràn.
+  .item:last-child span {
+    display: none;
+  }
+}
