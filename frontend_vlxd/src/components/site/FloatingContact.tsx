@@ -37,7 +37,8 @@ export function FloatingContact({
           className={[styles.btn, styles.zalo].join(' ')}
           aria-label="Chat Zalo"
         >
-          Zalo
+          <span className={styles.ring} aria-hidden />
+          <span className={styles.zaloText}>Zalo</span>
         </a>
       )}
     </div>

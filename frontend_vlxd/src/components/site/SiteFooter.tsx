@@ -7,8 +7,6 @@ const QUICK_LINKS = [
   { href: '/gioi-thieu', label: 'Giới thiệu' },
   { href: '/san-pham', label: 'Sản phẩm' },
   { href: '/tin-tuc', label: 'Tin tức' },
-  { href: '/tuyen-dung', label: 'Tuyển dụng' },
-  { href: '/chinh-sach-bao-mat', label: 'Chính sách bảo mật' },
   { href: '/chinh-sach-thanh-toan', label: 'Chính sách thanh toán' },
   { href: '/lien-he', label: 'Liên hệ' },
 ];

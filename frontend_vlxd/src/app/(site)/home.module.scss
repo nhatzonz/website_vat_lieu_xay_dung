@@ -15,3 +15,10 @@
     grid-template-columns: 1fr;
   }
 }
+
+// Cột trái: danh mục + banner cột bên xếp dọc.
+.sideCol {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}

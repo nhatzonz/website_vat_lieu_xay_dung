@@ -1,0 +1,84 @@
+@use 'tokens' as *;
+
+.box {
+  border-radius: $radius;
+  overflow: hidden;
+  background: #fff;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  padding: $space-3 $space-4;
+  background: $primary;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 4px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.item {
+  position: relative; // mốc cho tag HOT
+  display: block;
+  border-radius: $radius-sm;
+  box-shadow: $shadow-sm;
+  // KHÔNG overflow:hidden ở đây để tag HOT nhô ra góc được.
+}
+
+// Khung ảnh: cắt góc + chứa hiệu ứng zoom bên trong.
+.thumb {
+  display: block;
+  border-radius: $radius-sm;
+  overflow: hidden;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: transform 0.35s ease;
+  }
+}
+
+.item:hover .thumb img {
+  transform: scale(1.05);
+}
+
+// Tag HOT: góc trên–trái, NẰM GỌN trong ảnh (không bị khung cắt),
+// tự phóng to/thu nhỏ liên tục.
+.hotTag {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 46px;
+  height: auto;
+  z-index: 2;
+  pointer-events: none;
+  transform-origin: center;
+  animation: hotZoom 1s ease-in-out infinite;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.25));
+}
+
+@keyframes hotZoom {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.18);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hotTag {
+    animation: none;
+  }
+}

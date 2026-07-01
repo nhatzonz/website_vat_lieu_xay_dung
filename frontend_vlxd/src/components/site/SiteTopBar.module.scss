@@ -3,7 +3,7 @@
 .bar {
   background: $primary;
   color: #fff;
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .inner {
@@ -20,9 +20,10 @@
   gap: $space-2;
   color: #fff;
   white-space: nowrap;
+  font-weight: 500;
 
   strong {
-    font-weight: 700;
+    font-weight: 600;
   }
 
   &:hover {
@@ -34,7 +35,7 @@
   .inner {
     justify-content: center;
     gap: $space-3;
-    font-size: 12px;
+    font-size: 13px;
   }
 
   // Ẩn bớt email trên màn hình rất nhỏ để không tràn.
