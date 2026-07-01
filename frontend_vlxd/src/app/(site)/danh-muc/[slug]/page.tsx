@@ -2,7 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { JsonLd } from '@/components/JsonLd';
+import { ProductCard } from '@/components/site/ProductCard';
 import { findCategoryBySlug, getCategoryTree } from '@/lib/categories';
+import { getProductList } from '@/lib/products';
 import { absoluteUrl, buildMetadata } from '@/lib/seo';
 import type { PublicCategory } from '@/types/catalog';
 
@@ -39,6 +41,12 @@ export default async function CategoryPage({ params }: Params) {
 
   const { node, ancestors } = found;
   const children = node.children ?? [];
+
+  const products = await getProductList({
+    category: params.slug,
+    limit: 12,
+    sort: 'newest',
+  });
 
   const trail = [...ancestors, node];
 
@@ -100,7 +108,7 @@ export default async function CategoryPage({ params }: Params) {
       </header>
 
       {/* Lưới danh mục con */}
-      {children.length > 0 ? (
+      {children.length > 0 && (
         <section>
           <h2 className="mb-4 text-lg font-semibold text-gray-800">
             Danh mục con
@@ -137,11 +145,32 @@ export default async function CategoryPage({ params }: Params) {
             ))}
           </ul>
         </section>
+      )}
+
+      {/* Sản phẩm trong danh mục */}
+      {products.length > 0 ? (
+        <section className="mt-8">
+          <div className="mb-4 flex items-end justify-between">
+            <h2 className="text-lg font-semibold text-gray-800">Sản phẩm</h2>
+            <Link
+              href={`/san-pham?category=${node.slug}`}
+              className="text-sm font-semibold text-orange-600 hover:underline"
+            >
+              Xem tất cả →
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            {products.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        </section>
       ) : (
-        // Chưa có danh mục con: phần liệt kê sản phẩm thuộc GÓI sản phẩm (chưa làm).
-        <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-8 text-center text-gray-500">
-          <p>Sản phẩm trong danh mục này sẽ sớm được cập nhật.</p>
-        </div>
+        children.length === 0 && (
+          <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-8 text-center text-gray-500">
+            <p>Sản phẩm trong danh mục này sẽ sớm được cập nhật.</p>
+          </div>
+        )
       )}
     </div>
   );

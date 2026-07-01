@@ -13,6 +13,7 @@ import { BannersModule } from './modules/banners/banners.module';
 import { CategoriesModule } from './modules/categories/categories.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { HealthModule } from './modules/health/health.module';
+import { ProductsModule } from './modules/products/products.module';
 import { SettingsModule } from './modules/settings/settings.module';
 import { TagsModule } from './modules/tags/tags.module';
 import { UploadModule } from './modules/upload/upload.module';
@@ -40,6 +41,7 @@ import { UploadModule } from './modules/upload/upload.module';
     CategoriesModule,
     AttributesModule,
     TagsModule,
+    ProductsModule,
     BannersModule,
     UploadModule,
     // Các module nghiệp vụ tiếp theo (products, news...) thêm vào đây.

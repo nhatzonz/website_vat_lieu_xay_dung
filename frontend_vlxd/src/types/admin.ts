@@ -157,6 +157,99 @@ export interface TagInput {
   slug?: string;
 }
 
+// ---------- Products ----------
+
+export type PriceType = 'fixed' | 'contact';
+
+export interface Paginated<T> {
+  data: T[];
+  meta: { total: number; page: number; limit: number; totalPages: number };
+}
+
+export interface ProductImageItem {
+  id?: number;
+  imagePath: string;
+  altText?: string | null;
+  isPrimary?: boolean;
+  sortOrder?: number;
+}
+
+export interface ProductAttrValue {
+  attributeId: number;
+  value: string;
+  attribute?: Attribute;
+}
+
+export interface ProductTestMediaItem {
+  mediaType: 'youtube' | 'image';
+  mediaValue: string;
+  caption?: string | null;
+  sortOrder?: number;
+}
+
+/** Dòng trong bảng danh sách (tóm tắt). */
+export interface ProductListItem {
+  id: number;
+  name: string;
+  slug: string;
+  sku: string | null;
+  price: number | null;
+  priceUnit: string;
+  priceType: PriceType;
+  thumbnail: string | null;
+  shortDescription: string | null;
+  isNew: boolean;
+  isFeatured: boolean;
+  isActive: boolean;
+  views: number;
+  sortOrder: number;
+  createdAt: string;
+  category?: { id: number; name: string; slug: string } | null;
+}
+
+/** Chi tiết đầy đủ (form sửa). */
+export interface Product extends ProductListItem {
+  content: string | null;
+  testResult: string | null;
+  metaTitle: string | null;
+  metaDescription: string | null;
+  metaKeywords: string | null;
+  ogImage: string | null;
+  canonicalUrl: string | null;
+  images: ProductImageItem[];
+  attributeValues: ProductAttrValue[];
+  testMedia: ProductTestMediaItem[];
+  tags: Tag[];
+}
+
+/** Body POST/PUT /admin/products. */
+export interface ProductInput {
+  categoryId: number;
+  name: string;
+  slug?: string;
+  sku?: string;
+  price?: number | null;
+  priceUnit?: string;
+  priceType?: PriceType;
+  thumbnail?: string;
+  shortDescription?: string;
+  content?: string;
+  testResult?: string;
+  isNew?: boolean;
+  isFeatured?: boolean;
+  isActive?: boolean;
+  sortOrder?: number;
+  metaTitle?: string;
+  metaDescription?: string;
+  metaKeywords?: string;
+  ogImage?: string;
+  canonicalUrl?: string;
+  images?: ProductImageItem[];
+  attributeValues?: { attributeId: number; value: string }[];
+  testMedia?: ProductTestMediaItem[];
+  tagIds?: number[];
+}
+
 /** Body POST/PUT /admin/categories (field optional cho update). */
 export interface CategoryInput {
   name: string;

@@ -22,3 +22,11 @@
   flex-direction: column;
   gap: $space-4;
 }
+
+// Cột phải: các khối sản phẩm (mới + theo danh mục) xếp dọc.
+.mainCol {
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
+  min-width: 0;
+}

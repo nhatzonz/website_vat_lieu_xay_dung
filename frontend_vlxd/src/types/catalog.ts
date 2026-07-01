@@ -3,6 +3,61 @@
  * GET /public/categories (cây) và GET /public/categories/:slug.
  */
 
+/** Sản phẩm tóm tắt (danh sách/lưới). */
+export interface PublicProductListItem {
+  id: number;
+  name: string;
+  slug: string;
+  sku: string | null;
+  price: number | null;
+  priceUnit: string;
+  priceType: 'fixed' | 'contact';
+  thumbnail: string | null;
+  shortDescription: string | null;
+  isNew: boolean;
+  isFeatured: boolean;
+  category?: { id: number; name: string; slug: string } | null;
+  /** Có khi gọi list với withSpecs=1 (card "Sản phẩm mới"). */
+  attributeValues?: PublicProductAttrValue[];
+}
+
+export interface PublicProductImage {
+  id: number;
+  imagePath: string;
+  altText: string | null;
+  isPrimary: boolean;
+}
+
+export interface PublicProductAttrValue {
+  attributeId: number;
+  value: string;
+  attribute?: { id: number; name: string; unit: string | null };
+}
+
+export interface PublicProductTestMedia {
+  id: number;
+  mediaType: 'youtube' | 'image';
+  mediaValue: string;
+  caption: string | null;
+}
+
+/** Chi tiết sản phẩm công khai. */
+export interface PublicProduct extends PublicProductListItem {
+  content: string | null;
+  testResult: string | null;
+  views: number;
+  metaTitle: string | null;
+  metaDescription: string | null;
+  metaKeywords: string | null;
+  ogImage: string | null;
+  canonicalUrl: string | null;
+  images: PublicProductImage[];
+  attributeValues: PublicProductAttrValue[];
+  testMedia: PublicProductTestMedia[];
+  tags: { id: number; name: string; slug: string }[];
+  related: PublicProductListItem[];
+}
+
 /** Banner công khai (GET /public/banners). */
 export interface PublicBanner {
   id: number;

@@ -1,0 +1,118 @@
+@use 'tokens' as *;
+
+.wrap {
+  border: 1px solid $border;
+  border-radius: $radius;
+  overflow: hidden;
+  background: #fff;
+}
+
+.tabs {
+  display: flex;
+  gap: 2px;
+  background: $bg-soft;
+  box-shadow: inset 0 -1px 0 0 $border;
+  flex-wrap: wrap;
+}
+
+.tab {
+  padding: $space-3 $space-5;
+  border: none;
+  background: none;
+  font-size: 15px;
+  font-weight: 700;
+  color: $text-muted;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+
+  &:hover { color: $text; }
+}
+
+// Tab đang mở: nền cam, chữ trắng (giống thanh tab mẫu).
+.active {
+  background: $primary;
+  color: #fff !important;
+}
+
+.imageGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $space-4;
+
+  @media (max-width: 640px) { grid-template-columns: repeat(2, 1fr); }
+
+  img {
+    width: 100%;
+    border-radius: $radius;
+    border: 1px solid $border;
+  }
+}
+
+.panel {
+  padding: $space-5;
+}
+
+.muted {
+  margin: 0;
+  color: $text-muted;
+}
+
+// Nội dung HTML từ editor.
+.prose {
+  color: $text;
+  line-height: 1.7;
+  font-size: 15px;
+
+  :global(h1),
+  :global(h2),
+  :global(h3) { font-weight: 700; margin: 1em 0 0.5em; }
+  :global(p) { margin: 0 0 1em; }
+  :global(ul),
+  :global(ol) { margin: 0 0 1em; padding-left: 1.4em; }
+  :global(ul) { list-style: disc; }
+  :global(ol) { list-style: decimal; }
+  :global(img) { max-width: 100%; height: auto; border-radius: $radius; }
+  :global(a) { color: $text; text-decoration: underline; }
+  :global(table) { width: 100%; border-collapse: collapse; margin: 0 0 1em; }
+  :global(td),
+  :global(th) { border: 1px solid $border; padding: 8px 12px; }
+}
+
+.media {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-5;
+  margin-top: $space-4;
+}
+
+.mediaItem {
+  margin: 0;
+  width: 100%;
+  max-width: 800px; // video/ảnh to hơn, căn giữa
+
+  img { width: 100%; border-radius: $radius; }
+  figcaption {
+    margin-top: $space-3;
+    font-size: 16px;
+    font-weight: 500;
+    color: $text;
+    text-align: center;
+  }
+}
+
+.videoBox {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: $radius;
+  overflow: hidden;
+  background: #000;
+
+  iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+}

@@ -1,0 +1,204 @@
+@use 'tokens' as *;
+
+.gallery {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.main {
+  position: relative;
+  aspect-ratio: 1;
+  // Không cắt tràn để panel zoom hiện ra ngoài khung.
+}
+
+.frame {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 1px solid $border;
+  border-radius: $radius;
+  overflow: hidden;
+  background: $bg-muted;
+  cursor: zoom-in;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  &:hover .zoomHint { opacity: 1; }
+}
+
+// Ô kính lúp: theo con trỏ, tâm đặt tại vị trí trỏ (màu trắng).
+.lens {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.95),
+    0 0 0 2px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+}
+
+// Icon kính lúp gợi ý click phóng to (góc phải trên).
+.zoomHint {
+  position: absolute;
+  top: $space-2;
+  right: $space-2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0.85;
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+}
+
+// Panel phóng to nổi bên phải ảnh.
+.zoomPanel {
+  position: absolute;
+  top: 0;
+  left: calc(100% + #{$space-3});
+  width: 100%;
+  height: 100%;
+  z-index: 20;
+  border-radius: $radius;
+  background-color: $bg;
+  background-repeat: no-repeat;
+  box-shadow: 0 0 0 1px $border, 0 10px 30px rgba(0, 0, 0, 0.18);
+  pointer-events: none;
+}
+
+// Màn hình hẹp: không đủ chỗ panel bên phải → tắt hiệu ứng zoom.
+@media (max-width: 1024px) {
+  .lens,
+  .zoomPanel { display: none; }
+}
+
+.thumbs {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: $space-2;
+}
+
+.thumb {
+  aspect-ratio: 1;
+  border: 1px solid $border;
+  border-radius: $radius-sm;
+  overflow: hidden;
+  background: $bg-muted;
+  cursor: pointer;
+  padding: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  opacity: 0.65;
+  transition: opacity 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover { border-color: $primary-light; opacity: 1; }
+}
+
+.thumbActive {
+  border-color: $primary;
+  box-shadow: 0 0 0 2px $primary-soft;
+  opacity: 1;
+}
+
+// --- Modal xem ảnh toàn màn hình ---
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-5;
+  background: rgba(0, 0, 0, 0.9);
+  animation: fadeIn 0.15s ease;
+
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    cursor: default;
+  }
+}
+
+.closeBtn {
+  position: absolute;
+  top: $space-4;
+  right: $space-4;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover { background: rgba(255, 255, 255, 0.3); }
+}
+
+.navBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover { background: rgba(255, 255, 255, 0.3); }
+}
+
+.navPrev { left: $space-4; }
+.navNext { right: $space-4; }
+
+.counter {
+  position: absolute;
+  bottom: $space-4;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.noImg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  border: 1px solid $border;
+  border-radius: $radius;
+  background: $bg-muted;
+  color: $text-muted;
+}

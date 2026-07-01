@@ -1,0 +1,66 @@
+@use 'tokens' as *;
+
+.track {
+  display: flex;
+  gap: $space-4;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  // KHÔNG đặt scroll-behavior: smooth ở đây — sẽ làm kéo tay bị giật.
+  // (Autoplay/chấm chỉ mục tự truyền behavior:'smooth' khi cần.)
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.grab {
+  cursor: grab;
+}
+
+// Đang kéo: bỏ bám điểm để cuộn mượt theo tay, đổi con trỏ.
+.dragging {
+  scroll-snap-type: none;
+  cursor: grabbing;
+  user-select: none;
+}
+
+// 2 card/lần (desktop), 1 card/lần (mobile).
+.slide {
+  flex: 0 0 calc((100% - #{$space-4}) / 2);
+  min-width: 0;
+  scroll-snap-align: start;
+
+  @media (max-width: 640px) {
+    flex: 0 0 100%;
+  }
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: $space-2;
+  margin-top: $space-4;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  border: none;
+  background: $border-strong;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: $primary-light;
+  }
+}
+
+.dotOn {
+  width: 22px;
+  background: $primary;
+}

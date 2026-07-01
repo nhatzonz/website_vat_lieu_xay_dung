@@ -1,0 +1,35 @@
+@use 'tokens' as *;
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: $space-3;
+  margin-bottom: $space-4;
+  // Đường kẻ mảnh full chạy ngang dưới tiêu đề.
+  box-shadow: inset 0 -1px 0 0 $border;
+}
+
+.title {
+  margin: 0;
+  padding-bottom: 10px;
+  font-size: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: $text;
+  // Gạch chân đậm màu thương hiệu chỉ dưới phần chữ.
+  box-shadow: inset 0 -3px 0 0 $primary;
+}
+
+.more {
+  padding-bottom: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: $primary-darker;
+  white-space: nowrap;
+
+  &:hover {
+    color: $primary;
+  }
+}

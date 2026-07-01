@@ -1,39 +1,11 @@
 @use 'tokens' as *;
 
-.section {
-  min-width: 0;
-}
-
-.head {
-  margin-bottom: $space-4;
-  // Đường kẻ mảnh dưới tiêu đề khối.
-  box-shadow: inset 0 -1px 0 0 $border;
-  padding-bottom: $space-2;
-}
-
-.title {
-  display: inline-block;
-  margin: 0;
-  padding-bottom: $space-2;
-  font-size: 20px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  color: $text;
-  // Gạch chân màu thương hiệu (box-shadow thay border-bottom cho gọn theo tiêu đề).
-  box-shadow: inset 0 -3px 0 0 $primary;
-}
-
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: $space-4;
 
-  @media (max-width: 720px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media (max-width: 460px) {
+  @media (max-width: 640px) {
     grid-template-columns: 1fr;
   }
 }

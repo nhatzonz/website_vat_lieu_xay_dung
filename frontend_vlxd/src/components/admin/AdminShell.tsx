@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   ListChecks,
   LogOut,
+  Package,
   Settings,
   Tags,
 } from 'lucide-react';
@@ -20,6 +21,7 @@ import styles from './AdminShell.module.scss';
 
 const NAV = [
   { href: '/admin', label: 'Tổng quan', icon: LayoutDashboard, exact: true },
+  { href: '/admin/products', label: 'Sản phẩm', icon: Package },
   { href: '/admin/categories', label: 'Danh mục', icon: FolderTree },
   { href: '/admin/attributes', label: 'Thuộc tính', icon: ListChecks },
   { href: '/admin/tags', label: 'Thẻ', icon: Tags },

@@ -72,6 +72,32 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
 
 export const adminApi = {
   get: <T>(path: string) => request<T>(path),
+  /** GET danh sách phân trang — trả nguyên gói { data, meta } (không bóc). */
+  getPaged: async <T>(
+    path: string,
+  ): Promise<{ data: T[]; meta: { total: number; page: number; limit: number; totalPages: number } }> => {
+    const url = `${env.publicApiBaseUrl}${path.startsWith('/') ? path : `/${path}`}`;
+    const token = getToken();
+    const headers: Record<string, string> = { Accept: 'application/json' };
+    if (token) headers.Authorization = `Bearer ${token}`;
+    const res = await fetch(url, { headers, cache: 'no-store' });
+    if (res.status === 401 && typeof window !== 'undefined') {
+      clearSession();
+      if (!window.location.pathname.startsWith('/admin/login')) {
+        window.location.href = '/admin/login';
+      }
+    }
+    const json = await res.json().catch(() => null);
+    if (!res.ok) {
+      const msg = (json && (json.message || json.error)) || `Lỗi API ${res.status}`;
+      throw new AdminApiError(
+        res.status,
+        Array.isArray(msg) ? msg.join(', ') : String(msg),
+        json,
+      );
+    }
+    return json as { data: T[]; meta: { total: number; page: number; limit: number; totalPages: number } };
+  },
   post: <T>(path: string, body?: unknown, opts?: RequestOptions) =>
     request<T>(path, { ...opts, method: 'POST', body }),
   put: <T>(path: string, body?: unknown) =>

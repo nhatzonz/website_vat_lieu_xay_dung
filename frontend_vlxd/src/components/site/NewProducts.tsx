@@ -1,27 +1,22 @@
 import { PackageOpen } from 'lucide-react';
+import type { PublicProductListItem } from '@/types/catalog';
+import { ProductSlider } from './ProductSlider';
+import { SectionHeading } from './SectionHeading';
 import styles from './NewProducts.module.scss';
 
-/**
- * Khối "Sản phẩm mới". Dựng sẵn bố cục lưới; hiện chưa có module sản phẩm nên
- * để trạng thái trống. Khi có API sản phẩm, truyền `items` và render thẻ trong
- * `.grid` (đã chuẩn bị sẵn class).
- */
-export function NewProducts() {
-  const items: unknown[] = []; // TODO: nối API /public/products?is_new=1
-
+/** Khối "Sản phẩm mới" trang chủ — slider tự lướt 2 card/lần. */
+export function NewProducts({ products }: { products: PublicProductListItem[] }) {
   return (
-    <section className={styles.section}>
-      <div className={styles.head}>
-        <h2 className={styles.title}>Sản phẩm mới</h2>
-      </div>
+    <section>
+      <SectionHeading title="Sản phẩm mới" href="/san-pham" />
 
-      {items.length === 0 ? (
+      {products.length === 0 ? (
         <div className={styles.empty}>
           <PackageOpen size={40} />
           <p>Sản phẩm đang được cập nhật.</p>
         </div>
       ) : (
-        <div className={styles.grid}>{/* thẻ sản phẩm sẽ render ở đây */}</div>
+        <ProductSlider products={products} />
       )}
     </section>
   );
