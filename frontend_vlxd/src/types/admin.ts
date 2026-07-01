@@ -122,6 +122,41 @@ export interface BannerInput {
   isActive?: boolean;
 }
 
+// ---------- Attributes ----------
+
+export interface Attribute {
+  id: number;
+  name: string;
+  unit: string | null;
+  sortOrder: number;
+  isActive: boolean;
+  createdAt: string;
+}
+
+/** Body POST/PUT /admin/attributes. */
+export interface AttributeInput {
+  name: string;
+  unit?: string;
+  sortOrder?: number;
+  isActive?: boolean;
+}
+
+// ---------- Tags ----------
+
+export interface Tag {
+  id: number;
+  name: string;
+  slug: string;
+  /** Có khi gọi GET /admin/tags: số sản phẩm đang gắn thẻ. */
+  productCount?: number;
+}
+
+/** Body POST/PUT /admin/tags. */
+export interface TagInput {
+  name: string;
+  slug?: string;
+}
+
 /** Body POST/PUT /admin/categories (field optional cho update). */
 export interface CategoryInput {
   name: string;

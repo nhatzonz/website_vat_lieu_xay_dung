@@ -4,8 +4,10 @@ import {
   FolderTree,
   GalleryHorizontalEnd,
   LayoutDashboard,
+  ListChecks,
   LogOut,
   Settings,
+  Tags,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -19,6 +21,8 @@ import styles from './AdminShell.module.scss';
 const NAV = [
   { href: '/admin', label: 'Tổng quan', icon: LayoutDashboard, exact: true },
   { href: '/admin/categories', label: 'Danh mục', icon: FolderTree },
+  { href: '/admin/attributes', label: 'Thuộc tính', icon: ListChecks },
+  { href: '/admin/tags', label: 'Thẻ', icon: Tags },
   { href: '/admin/banners', label: 'Banner', icon: GalleryHorizontalEnd },
   { href: '/admin/settings', label: 'Cấu hình', icon: Settings },
 ];

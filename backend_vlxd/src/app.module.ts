@@ -7,12 +7,14 @@ import { envValidationSchema } from './config/env.validation';
 import { RolesGuard } from './common/guards/roles.guard';
 import { DatabaseModule } from './database/database.module';
 import { AdminsModule } from './modules/admins/admins.module';
+import { AttributesModule } from './modules/attributes/attributes.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { BannersModule } from './modules/banners/banners.module';
 import { CategoriesModule } from './modules/categories/categories.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { HealthModule } from './modules/health/health.module';
 import { SettingsModule } from './modules/settings/settings.module';
+import { TagsModule } from './modules/tags/tags.module';
 import { UploadModule } from './modules/upload/upload.module';
 
 @Module({
@@ -36,6 +38,8 @@ import { UploadModule } from './modules/upload/upload.module';
     HealthModule,
     SettingsModule,
     CategoriesModule,
+    AttributesModule,
+    TagsModule,
     BannersModule,
     UploadModule,
     // Các module nghiệp vụ tiếp theo (products, news...) thêm vào đây.

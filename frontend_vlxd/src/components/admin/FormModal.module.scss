@@ -1,0 +1,27 @@
+@use 'tokens' as *;
+
+// Layout dùng chung cho các modal form đơn giản (attributes, tags…).
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $space-4;
+
+  @media (max-width: 560px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.alert {
+  padding: $space-3;
+  border-radius: $radius;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: $danger-dark;
+  font-size: 13px;
+}

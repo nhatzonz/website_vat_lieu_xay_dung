@@ -1,0 +1,166 @@
+@use 'tokens' as *;
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-3;
+  flex-wrap: wrap;
+}
+
+.count {
+  margin: 0;
+  font-size: 14px;
+  color: $text-muted;
+}
+
+.saving {
+  color: $primary;
+  font-style: italic;
+}
+
+.tableCard {
+  @include card;
+  overflow: hidden;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+
+  thead th {
+    padding: $space-3 $space-4;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: $text-muted;
+    background: $bg-soft;
+    border-bottom: 1px solid $border;
+  }
+
+  thead th.center {
+    text-align: center;
+  }
+
+  thead th.right {
+    text-align: right;
+  }
+
+  tbody td {
+    padding: $space-3 $space-4;
+    border-bottom: 1px solid $border;
+    color: $text;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  tbody tr:hover {
+    background: $primary-soft;
+  }
+}
+
+.center {
+  text-align: center;
+}
+
+.right {
+  text-align: right;
+}
+
+.name {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  font-weight: 600;
+}
+
+.grip {
+  color: $border-strong;
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.unit {
+  color: $text-muted;
+  font-family: ui-monospace, monospace;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.dragging {
+  opacity: 0.4;
+}
+
+.dropTarget td {
+  box-shadow: inset 0 2px 0 0 $primary;
+}
+
+.actions {
+  display: inline-flex;
+  gap: $space-2;
+  justify-content: flex-end;
+}
+
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid $border;
+  border-radius: $radius;
+  background: $bg;
+  color: $text-muted;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    background: $primary-soft;
+    color: $text;
+    border-color: $primary;
+  }
+}
+
+.danger:hover {
+  background: #fef2f2;
+  color: $danger;
+  border-color: #fecaca;
+}
+
+.empty {
+  @include card;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-4;
+  padding: $space-6;
+  color: $text-muted;
+
+  p {
+    margin: 0;
+  }
+}
+
+.error {
+  @include card;
+  padding: $space-5;
+  color: $danger-dark;
+  background: #fef2f2;
+  border-color: #fecaca;
+}

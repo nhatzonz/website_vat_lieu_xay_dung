@@ -426,7 +426,22 @@ INSERT INTO attributes (name, unit, sort_order) VALUES
   ('Chiều dày', 'mm', 4),
   ('Màu sắc', NULL, 5);
 
+
 SET FOREIGN_KEY_CHECKS = 1;
+USE ceiling_db;
+
+INSERT IGNORE INTO tags (name, slug) VALUES
+  ('Bán chạy',        'ban-chay'),
+  ('Khuyến mãi',      'khuyen-mai'),
+  ('Sản phẩm mới',    'san-pham-moi'),
+  ('Nổi bật',         'noi-bat'),
+  ('Hàng nhập khẩu',  'hang-nhap-khau'),
+  ('Cao cấp',         'cao-cap'),
+  ('Giá tốt',         'gia-tot'),
+  ('Chống cháy',      'chong-chay'),
+  ('Chống ẩm',        'chong-am'),
+  ('Cách âm',         'cach-am');
+
 
 -- =====================================================================
 -- KẾT THÚC SCHEMA
