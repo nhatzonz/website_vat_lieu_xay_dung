@@ -24,6 +24,14 @@ import type {
 } from '@/types/admin';
 import styles from '../product-form.module.scss';
 
+type Section = 'general' | 'content' | 'test' | 'seo';
+const SECTIONS: { key: Section; label: string }[] = [
+  { key: 'general', label: 'Cơ bản' },
+  { key: 'content', label: 'Nội dung' },
+  { key: 'test', label: 'Thử nghiệm' },
+  // { key: 'seo', label: 'SEO' }, // tạm ẩn — bật lại khi cần
+];
+
 export default function ProductFormPage() {
   const router = useRouter();
   const toast = useToast();
@@ -34,7 +42,7 @@ export default function ProductFormPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [showSeo, setShowSeo] = useState(false);
+  const [section, setSection] = useState<Section>('general');
 
   const [cats, setCats] = useState<Category[]>([]);
   const [attrs, setAttrs] = useState<Attribute[]>([]);
@@ -183,8 +191,14 @@ export default function ProductFormPage() {
 
   async function submit() {
     setError(null);
-    if (!name.trim()) return setError('Vui lòng nhập tên sản phẩm.');
-    if (!categoryId) return setError('Vui lòng chọn danh mục.');
+    if (!name.trim()) {
+      setSection('general');
+      return setError('Vui lòng nhập tên sản phẩm.');
+    }
+    if (!categoryId) {
+      setSection('general');
+      return setError('Vui lòng chọn danh mục.');
+    }
 
     setSaving(true);
     try {
@@ -221,9 +235,26 @@ export default function ProductFormPage() {
 
       {error && <div className={styles.alert}>{error}</div>}
 
+      <nav className={styles.tabsNav}>
+        {SECTIONS.map((s) => (
+          <button
+            key={s.key}
+            type="button"
+            className={[styles.tabBtn, section === s.key ? styles.tabActive : '']
+              .filter(Boolean)
+              .join(' ')}
+            onClick={() => setSection(s.key)}
+          >
+            {s.label}
+          </button>
+        ))}
+      </nav>
+
       <div className={styles.grid}>
         {/* Cột chính */}
         <div className={styles.col}>
+          {section === 'general' && (
+            <>
           <section className={styles.card}>
             <h2 className={styles.cardTitle}>Thông tin cơ bản</h2>
             <div className={styles.row}>
@@ -298,7 +329,11 @@ export default function ProductFormPage() {
             <h2 className={styles.cardTitle}>Thư viện ảnh</h2>
             <GalleryUploadField value={images} onChange={setImages} />
           </section>
+            </>
+          )}
 
+          {section === 'content' && (
+            <>
           <section className={styles.card}>
             <h2 className={styles.cardTitle}>Thông số kỹ thuật</h2>
             {attrs.length === 0 ? (
@@ -334,7 +369,10 @@ export default function ProductFormPage() {
               placeholder="Nhập mô tả chi tiết sản phẩm…"
             />
           </section>
+            </>
+          )}
 
+          {section === 'test' && (
           <section className={styles.card}>
             <h2 className={styles.cardTitle}>Kết quả thử nghiệm</h2>
             <RichTextEditor
@@ -390,10 +428,49 @@ export default function ProductFormPage() {
               Nhúng video YouTube
             </Button>
           </section>
+          )}
+
+          {section === 'seo' && (
+            <section className={styles.card}>
+              <h2 className={styles.cardTitle}>Tùy chọn SEO</h2>
+              <TextField
+                id="p-mtitle"
+                label="Meta title"
+                hint="Để trống sẽ dùng tên sản phẩm."
+                value={metaTitle}
+                onChange={(e) => setMetaTitle(e.target.value)}
+              />
+              <TextArea
+                id="p-mdesc"
+                label="Meta description"
+                rows={3}
+                value={metaDescription}
+                onChange={(e) => setMetaDescription(e.target.value)}
+              />
+              <TextField
+                id="p-mkw"
+                label="Meta keywords"
+                value={metaKeywords}
+                onChange={(e) => setMetaKeywords(e.target.value)}
+              />
+              <InlineImageField
+                label="OG image"
+                kind="og"
+                value={ogImage}
+                onChange={setOgImage}
+              />
+              <TextField
+                id="p-canon"
+                label="Canonical URL"
+                value={canonicalUrl}
+                onChange={(e) => setCanonicalUrl(e.target.value)}
+              />
+            </section>
+          )}
         </div>
 
-        {/* Cột phụ */}
-        <div className={styles.col}>
+        {/* Cột phụ — luôn hiển thị */}
+        <div className={styles.side}>
           <section className={styles.card}>
             <h2 className={styles.cardTitle}>Hiển thị</h2>
             <div className={styles.switches}>
@@ -443,50 +520,6 @@ export default function ProductFormPage() {
             )}
           </section>
 
-          <section className={styles.card}>
-            <button
-              type="button"
-              className={styles.seoToggle}
-              onClick={() => setShowSeo((s) => !s)}
-            >
-              {showSeo ? '▾' : '▸'} Tùy chọn SEO
-            </button>
-            {showSeo && (
-              <>
-                <TextField
-                  id="p-mtitle"
-                  label="Meta title"
-                  value={metaTitle}
-                  onChange={(e) => setMetaTitle(e.target.value)}
-                />
-                <TextArea
-                  id="p-mdesc"
-                  label="Meta description"
-                  rows={2}
-                  value={metaDescription}
-                  onChange={(e) => setMetaDescription(e.target.value)}
-                />
-                <TextField
-                  id="p-mkw"
-                  label="Meta keywords"
-                  value={metaKeywords}
-                  onChange={(e) => setMetaKeywords(e.target.value)}
-                />
-                <InlineImageField
-                  label="OG image"
-                  kind="og"
-                  value={ogImage}
-                  onChange={setOgImage}
-                />
-                <TextField
-                  id="p-canon"
-                  label="Canonical URL"
-                  value={canonicalUrl}
-                  onChange={(e) => setCanonicalUrl(e.target.value)}
-                />
-              </>
-            )}
-          </section>
         </div>
       </div>
 

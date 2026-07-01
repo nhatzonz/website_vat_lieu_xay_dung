@@ -1,9 +1,8 @@
 import { CategoryProductSection } from '@/components/site/CategoryProductSection';
-import { CategorySidebar } from '@/components/site/CategorySidebar';
 import { HeroSlider } from '@/components/HeroSlider';
 import { JsonLd } from '@/components/JsonLd';
 import { NewProducts } from '@/components/site/NewProducts';
-import { SidebarBanners } from '@/components/site/SidebarBanners';
+import { SiteSidebar } from '@/components/site/SiteSidebar';
 import { getBanners } from '@/lib/banners';
 import { getCategoryTree } from '@/lib/categories';
 import { getProductList } from '@/lib/products';
@@ -19,10 +18,9 @@ const MAX_CATEGORY_SECTIONS = 5;
 
 export default async function HomePage() {
   // Lỗi API không được làm sập trang chủ → fallback rỗng.
-  const [sliders, categories, sideBanners, newProducts] = await Promise.all([
+  const [sliders, categories, newProducts] = await Promise.all([
     getBanners('home_slider').catch(() => [] as PublicBanner[]),
     getCategoryTree().catch(() => [] as PublicCategory[]),
-    getBanners('sidebar').catch(() => [] as PublicBanner[]),
     getProductList({ sort: 'newest', limit: 10, withSpecs: true }),
   ]);
 
@@ -55,10 +53,7 @@ export default async function HomePage() {
       </div>
 
       <div className={`container ${styles.layout}`}>
-        <div className={styles.sideCol}>
-          <CategorySidebar categories={categories} />
-          <SidebarBanners banners={sideBanners} />
-        </div>
+        <SiteSidebar />
 
         <div className={styles.mainCol}>
           <NewProducts products={newProducts} />

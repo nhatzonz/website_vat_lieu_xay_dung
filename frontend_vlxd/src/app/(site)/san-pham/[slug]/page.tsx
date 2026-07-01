@@ -3,15 +3,14 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { JsonLd } from '@/components/JsonLd';
-import { CategorySidebar } from '@/components/site/CategorySidebar';
 import { ProductCard, formatProductPrice } from '@/components/site/ProductCard';
 import { ProductGallery } from '@/components/site/ProductGallery';
 import { ProductTabs } from '@/components/site/ProductTabs';
+import { SiteSidebar } from '@/components/site/SiteSidebar';
 import { ViewTracker } from '@/components/site/ViewTracker';
-import { getCategoryTree } from '@/lib/categories';
 import { getProductBySlug } from '@/lib/products';
 import { absoluteUrl, buildMetadata } from '@/lib/seo';
-import type { PublicCategory, PublicProduct } from '@/types/catalog';
+import type { PublicProduct } from '@/types/catalog';
 import styles from './product-detail.module.scss';
 
 export const revalidate = 120;
@@ -37,10 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ProductDetailPage({ params }: Props) {
-  const [p, tree] = await Promise.all([
-    load(params.slug),
-    getCategoryTree().catch(() => [] as PublicCategory[]),
-  ]);
+  const p = await load(params.slug);
   if (!p) notFound();
 
   const priceText = formatProductPrice(p);
@@ -90,7 +86,7 @@ export default async function ProductDetailPage({ params }: Props) {
       </div>
 
       <div className={`container ${styles.layout}`}>
-        <CategorySidebar categories={tree} />
+        <SiteSidebar />
 
         <div className={styles.content}>
           <div className={styles.top}>

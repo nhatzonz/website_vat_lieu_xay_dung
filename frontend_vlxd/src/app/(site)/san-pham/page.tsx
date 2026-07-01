@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { CategorySidebar } from '@/components/site/CategorySidebar';
 import { ProductCard } from '@/components/site/ProductCard';
 import { ProductSortSelect } from '@/components/site/ProductSortSelect';
+import { SiteSidebar } from '@/components/site/SiteSidebar';
 import { getCategoryTree, findCategoryBySlug } from '@/lib/categories';
 import { getProducts } from '@/lib/products';
 import { buildMetadata } from '@/lib/seo';
@@ -76,7 +76,7 @@ export default async function ProductListPage({ searchParams }: Props) {
       </nav>
 
       <div className={styles.layout}>
-        <CategorySidebar categories={tree} />
+        <SiteSidebar />
 
         <div className={styles.main}>
           <div className={styles.toolbar}>

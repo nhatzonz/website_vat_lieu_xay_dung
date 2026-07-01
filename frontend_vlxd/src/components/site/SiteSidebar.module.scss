@@ -1,0 +1,8 @@
+@use 'tokens' as *;
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  min-width: 0;
+}
