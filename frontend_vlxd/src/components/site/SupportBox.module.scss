@@ -1,0 +1,126 @@
+@use 'tokens' as *;
+
+/* Tông navy riêng cho khối Hỗ trợ (theo mẫu ceiling.vn, khác tông cam của site). */
+$sp-head-top: #2a4d86;
+$sp-head-bottom: #14315a;
+$sp-ribbon: rgba(255, 255, 255, 0.16);
+$sp-chevron: #b8cdec;
+$sp-text: #17253c;
+$sp-icon: #14315a;
+$sp-sep: #e6e6e6;
+
+.box {
+  border: 1px solid $border;
+  border-radius: $radius;
+  overflow: hidden;
+  background: #fff;
+}
+
+/* --- Header navy với dải chevron nghiêng bên trái --- */
+.head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 42px;
+  padding: 0 $space-4 0 44px;
+  background: linear-gradient(180deg, $sp-head-top 0%, $sp-head-bottom 100%);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  overflow: hidden;
+}
+
+/* Dải ruy-băng sáng hơn, nghiêng, nằm dưới cụm chevron. */
+.head::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 0;
+  bottom: 0;
+  width: 46px;
+  background: $sp-ribbon;
+  transform: skewX(-18deg);
+}
+
+.ribbon {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  color: $sp-chevron;
+  z-index: 1;
+}
+
+/* --- Thân: nền "bàn phím" bằng SVG pattern (tự chứa, không cần file ảnh) ---
+   Lớp gradient trắng phủ lên: trái sáng (chữ rõ), phải để lộ các phím như mẫu. */
+.body {
+  position: relative;
+  overflow: hidden;
+  background-color: #eef1f5;
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.94) 0%,
+      rgba(255, 255, 255, 0.78) 45%,
+      rgba(255, 255, 255, 0.5) 100%
+    ),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='64'%3E%3Cg fill='%23d6dce6'%3E%3Crect x='4' y='6' width='24' height='18' rx='3'/%3E%3Crect x='36' y='6' width='24' height='18' rx='3'/%3E%3Crect x='68' y='6' width='24' height='18' rx='3'/%3E%3Crect x='-12' y='36' width='24' height='18' rx='3'/%3E%3Crect x='20' y='36' width='24' height='18' rx='3'/%3E%3Crect x='52' y='36' width='24' height='18' rx='3'/%3E%3Crect x='84' y='36' width='24' height='18' rx='3'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: cover, 96px 64px;
+}
+
+.list {
+  position: relative;
+  z-index: 1;
+  list-style: none;
+  margin: 0;
+  padding: $space-2 0;
+}
+
+.item {
+  border-bottom: 1px dashed $sp-sep;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  padding: 12px $space-4;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: $sp-text;
+  line-height: 1.4;
+  transition: color 0.15s ease;
+
+  svg {
+    flex-shrink: 0;
+    color: $sp-icon;
+  }
+}
+
+a.row:hover {
+  color: $sp-head-top;
+
+  svg {
+    color: $sp-head-top;
+  }
+}
+
+.text {
+  min-width: 0;
+}
+
+.name {
+  font-weight: 700;
+}
+
+.value {
+  font-weight: 700;
+  white-space: nowrap;
+}

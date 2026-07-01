@@ -85,3 +85,13 @@ export interface PublicCategory {
   canonicalUrl: string | null;
   children?: PublicCategory[];
 }
+
+/** Nhân viên/kênh "Hỗ trợ trực tuyến" (GET /public/support). */
+export interface PublicSupport {
+  id: number;
+  name: string;
+  phone: string | null;
+  zalo: string | null;
+  channel: string;
+  sortOrder: number;
+}

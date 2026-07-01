@@ -1,24 +1,34 @@
 import { getBanners } from '@/lib/banners';
 import { getCategoryTree } from '@/lib/categories';
-import type { PublicBanner, PublicCategory } from '@/types/catalog';
+import { getSupportContacts } from '@/lib/support';
+import type {
+  PublicBanner,
+  PublicCategory,
+  PublicSupport,
+} from '@/types/catalog';
 import { CategorySidebar } from './CategorySidebar';
 import { SidebarBanners } from './SidebarBanners';
+import { SupportBox } from './SupportBox';
 import styles from './SiteSidebar.module.scss';
 
 /**
  * Cột sidebar dùng chung cho MỌI trang (chủ, sản phẩm, danh mục): danh mục +
- * banner. Tự fetch dữ liệu để mọi nơi hiển thị giống hệt nhau. Các fetch đều có
- * ISR (revalidate 300s) nên gọi lặp trong cùng request được Next dedupe.
+ * hỗ trợ trực tuyến + banner. Tự fetch dữ liệu để mọi nơi hiển thị giống hệt
+ * nhau. Các fetch đều có ISR (revalidate 300s) nên gọi lặp trong cùng request
+ * được Next dedupe.
  */
 export async function SiteSidebar() {
-  const [categories, banners] = await Promise.all([
+  const [categories, support, banners] = await Promise.all([
     getCategoryTree().catch(() => [] as PublicCategory[]),
+    getSupportContacts().catch(() => [] as PublicSupport[]),
     getBanners('sidebar').catch(() => [] as PublicBanner[]),
   ]);
 
   return (
     <div className={styles.col}>
       <CategorySidebar categories={categories} />
+      <SupportBox contacts={support} />
+      {/* Video clips (GÓI 8) sẽ chèn ở đây — dưới hỗ trợ, trên banner. */}
       <SidebarBanners banners={banners} />
     </div>
   );

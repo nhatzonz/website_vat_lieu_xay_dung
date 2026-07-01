@@ -442,6 +442,12 @@ INSERT IGNORE INTO tags (name, slug) VALUES
   ('Chống ẩm',        'chong-am'),
   ('Cách âm',         'cach-am');
 
+-- Hỗ trợ trực tuyến (hiển thị ở sidebar trang công khai)
+INSERT INTO support_contacts (name, phone, zalo, channel, sort_order, is_active) VALUES
+  ('Hotline 24/7', '0844 444 933', NULL,          'hotline', 1, 1),
+  ('Mr Công',      '0972 217 770', '0972 217 770', 'hotline', 2, 1),
+  ('Ms Anh',       '0975 436 660', '0975 436 660', 'hotline', 3, 1);
+
 
 -- =====================================================================
 -- KẾT THÚC SCHEMA

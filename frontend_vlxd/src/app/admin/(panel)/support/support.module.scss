@@ -1,0 +1,197 @@
+@use 'tokens' as *;
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-3;
+  flex-wrap: wrap;
+}
+
+.heading {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  font-size: 18px;
+  font-weight: 700;
+  color: $text;
+
+  svg {
+    color: $primary;
+  }
+}
+
+.count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: $primary-soft;
+  color: $primary-darker;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.note {
+  margin: 0;
+  color: $text-muted;
+  font-size: 13px;
+}
+
+.saving {
+  color: $primary;
+  font-style: italic;
+  font-size: 13px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.card {
+  @include card;
+  display: flex;
+  align-items: center;
+  gap: $space-4;
+  padding: $space-3 $space-4;
+  transition: box-shadow 0.15s ease;
+}
+
+.grip {
+  color: $border-strong;
+  cursor: grab;
+  flex-shrink: 0;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: $primary-soft;
+  color: $primary-dark;
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.name {
+  font-weight: 700;
+  color: $text;
+}
+
+.contacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-1 $space-4;
+  font-size: 13px;
+  color: $text-muted;
+  font-family: ui-monospace, monospace;
+}
+
+.channel {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid $border;
+  background: $bg;
+  color: $text-muted;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.muted {
+  color: $text-muted;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  flex-shrink: 0;
+}
+
+.actions {
+  display: inline-flex;
+  gap: $space-2;
+  flex-shrink: 0;
+}
+
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid $border;
+  border-radius: $radius;
+  background: $bg;
+  color: $text-muted;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    background: $primary-soft;
+    color: $text;
+    border-color: $primary;
+  }
+}
+
+.danger:hover {
+  background: #fef2f2;
+  color: $danger;
+  border-color: #fecaca;
+}
+
+.dragging {
+  opacity: 0.4;
+}
+
+.dropTarget {
+  box-shadow: inset 0 2px 0 0 $primary;
+}
+
+.empty {
+  @include card;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-4;
+  padding: $space-6;
+  color: $text-muted;
+
+  p {
+    margin: 0;
+  }
+}
+
+.error {
+  @include card;
+  padding: $space-5;
+  color: $danger-dark;
+  background: #fef2f2;
+  border-color: #fecaca;
+}

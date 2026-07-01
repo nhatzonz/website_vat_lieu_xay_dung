@@ -15,6 +15,7 @@ import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { HealthModule } from './modules/health/health.module';
 import { ProductsModule } from './modules/products/products.module';
 import { SettingsModule } from './modules/settings/settings.module';
+import { SupportModule } from './modules/support/support.module';
 import { TagsModule } from './modules/tags/tags.module';
 import { UploadModule } from './modules/upload/upload.module';
 
@@ -43,6 +44,7 @@ import { UploadModule } from './modules/upload/upload.module';
     TagsModule,
     ProductsModule,
     BannersModule,
+    SupportModule,
     UploadModule,
     // Các module nghiệp vụ tiếp theo (products, news...) thêm vào đây.
   ],

@@ -157,6 +157,40 @@ export interface TagInput {
   slug?: string;
 }
 
+// ---------- Support (Hỗ trợ trực tuyến) ----------
+
+/** Kênh liên hệ — khớp SUPPORT_CHANNELS ở backend. */
+export const SUPPORT_CHANNELS = [
+  { value: 'hotline', label: 'Hotline (gọi điện)' },
+  { value: 'zalo', label: 'Zalo' },
+] as const;
+
+export type SupportChannel = (typeof SUPPORT_CHANNELS)[number]['value'];
+
+export function supportChannelLabel(value: string): string {
+  return SUPPORT_CHANNELS.find((c) => c.value === value)?.label ?? value;
+}
+
+export interface SupportContact {
+  id: number;
+  name: string;
+  phone: string | null;
+  zalo: string | null;
+  channel: string;
+  sortOrder: number;
+  isActive: boolean;
+}
+
+/** Body POST/PUT /admin/support (field optional cho update). */
+export interface SupportContactInput {
+  name: string;
+  phone?: string;
+  zalo?: string;
+  channel?: SupportChannel;
+  sortOrder?: number;
+  isActive?: boolean;
+}
+
 // ---------- Products ----------
 
 export type PriceType = 'fixed' | 'contact';

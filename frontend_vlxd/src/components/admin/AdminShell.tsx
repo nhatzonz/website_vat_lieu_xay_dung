@@ -3,6 +3,7 @@
 import {
   FolderTree,
   GalleryHorizontalEnd,
+  Headphones,
   LayoutDashboard,
   ListChecks,
   LogOut,
@@ -26,6 +27,7 @@ const NAV = [
   { href: '/admin/attributes', label: 'Thuộc tính', icon: ListChecks },
   { href: '/admin/tags', label: 'Thẻ', icon: Tags },
   { href: '/admin/banners', label: 'Banner', icon: GalleryHorizontalEnd },
+  { href: '/admin/support', label: 'Hỗ trợ', icon: Headphones },
   { href: '/admin/settings', label: 'Cấu hình', icon: Settings },
 ];
 
