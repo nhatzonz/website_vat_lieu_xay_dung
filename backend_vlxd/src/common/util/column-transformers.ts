@@ -27,5 +27,9 @@ export const decimalTransformer: ValueTransformer = {
 export const booleanTransformer: ValueTransformer = {
   to: (value?: boolean | null): number | undefined =>
     value === null || value === undefined ? undefined : value ? 1 : 0,
-  from: (value?: number | null): boolean => value === 1,
+  // Chấp nhận cả số (1) từ DB lẫn boolean (true) — sau save() TypeORM có thể
+  // chạy lại `from` trên giá trị đã là boolean, nên phải xử lý cả 2 để response
+  // không bị lật ngược thành false.
+  from: (value?: number | boolean | null): boolean =>
+    value === 1 || value === true,
 };

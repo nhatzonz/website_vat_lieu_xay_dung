@@ -38,7 +38,9 @@ export class AttributesService {
 
   async create(dto: CreateAttributeDto): Promise<Attribute> {
     await this.assertNameUnique(dto.name);
-    const entity = this.attributes.create({ isActive: true, ...dto });
+    // Đặt isActive SAU spread để không bị dto.isActive=undefined ghi đè;
+    // không gửi thì mặc định hiển thị (true).
+    const entity = this.attributes.create({ ...dto, isActive: dto.isActive ?? true });
     return this.attributes.save(entity);
   }
 
