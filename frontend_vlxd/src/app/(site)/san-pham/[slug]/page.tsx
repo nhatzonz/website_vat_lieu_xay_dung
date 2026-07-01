@@ -1,4 +1,4 @@
-import { ChevronRight, Eye, Home, ShoppingCart } from 'lucide-react';
+import { ChevronRight, Eye, Home, MessageCircle, Phone } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -10,6 +10,7 @@ import { SiteSidebar } from '@/components/site/SiteSidebar';
 import { ViewTracker } from '@/components/site/ViewTracker';
 import { getProductBySlug } from '@/lib/products';
 import { absoluteUrl, buildMetadata } from '@/lib/seo';
+import { getPublicSettings } from '@/lib/settings';
 import type { PublicProduct } from '@/types/catalog';
 import styles from './product-detail.module.scss';
 
@@ -36,11 +37,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ProductDetailPage({ params }: Props) {
-  const p = await load(params.slug);
+  const [p, settings] = await Promise.all([
+    load(params.slug),
+    getPublicSettings(),
+  ]);
   if (!p) notFound();
 
   const priceText = formatProductPrice(p);
   const isContact = p.priceType === 'contact' || p.price === null;
+
+  // Nút liên hệ: Zalo (từ cấu hình) + gọi hotline.
+  const zalo = settings.zalo || settings.social_zalo_oa || '';
+  const zaloHref = zalo
+    ? zalo.startsWith('http')
+      ? zalo
+      : `https://zalo.me/${zalo.replace(/\s/g, '')}`
+    : null;
+  const hotline = settings.hotline || '';
+  const telHref = hotline ? `tel:${hotline.replace(/\s/g, '')}` : null;
 
   return (
     <>
@@ -132,9 +146,25 @@ export default async function ProductDetailPage({ params }: Props) {
               )}
 
               <div className={styles.cta}>
-                <Link href="/lien-he" className={styles.order}>
-                  <ShoppingCart size={18} /> Đặt hàng
-                </Link>
+                {zaloHref ? (
+                  <a
+                    href={zaloHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`${styles.order} ${styles.pulse}`}
+                  >
+                    <MessageCircle size={18} /> Liên hệ Zalo
+                  </a>
+                ) : (
+                  <Link href="/lien-he" className={styles.order}>
+                    <MessageCircle size={18} /> Liên hệ
+                  </Link>
+                )}
+                {telHref && (
+                  <a href={telHref} className={styles.call}>
+                    <Phone size={18} /> Gọi tư vấn
+                  </a>
+                )}
               </div>
 
               {p.tags.length > 0 && (

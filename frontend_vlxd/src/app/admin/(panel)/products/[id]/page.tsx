@@ -327,6 +327,11 @@ export default function ProductFormPage() {
 
           <section className={styles.card}>
             <h2 className={styles.cardTitle}>Thư viện ảnh</h2>
+            <p className={styles.muted}>
+              Kích thước khuyên dùng: <strong>1200 × 1200 px</strong> (tỉ lệ 1:1,
+              nền trắng, chủ thể ở giữa). Lưới sản phẩm cắt theo 4:3, trang chi
+              tiết hiển thị đầy đủ. JPEG/PNG/WebP, tối đa 8MB.
+            </p>
             <GalleryUploadField value={images} onChange={setImages} />
           </section>
             </>
@@ -493,7 +498,7 @@ export default function ProductFormPage() {
               label=""
               kind="product"
               value={thumbnail}
-              hint="Để trống sẽ dùng ảnh chính trong thư viện."
+              hint="Để trống sẽ dùng ảnh chính trong thư viện. Khuyên dùng ảnh vuông 1200 × 1200 px."
               onChange={setThumbnail}
             />
           </section>

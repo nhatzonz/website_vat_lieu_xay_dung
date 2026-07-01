@@ -132,6 +132,9 @@
 }
 
 .cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-3;
   margin-top: $space-2;
 }
 
@@ -148,6 +151,54 @@
   box-shadow: $shadow-sm;
 
   &:hover { background: $primary-dark; }
+}
+
+// Animation thu hút cho nút Zalo: vòng sáng lan + nhún nhẹ.
+.pulse {
+  animation: zaloPulse 1.8s ease-in-out infinite;
+
+  svg {
+    animation: zaloWiggle 1.8s ease-in-out infinite;
+  }
+
+  &:hover { animation-play-state: paused; }
+}
+
+@keyframes zaloPulse {
+  0% { box-shadow: 0 0 0 0 rgba($primary, 0.5); }
+  70% { box-shadow: 0 0 0 18px rgba($primary, 0); }
+  100% { box-shadow: 0 0 0 0 rgba($primary, 0); }
+}
+
+@keyframes zaloWiggle {
+  0%, 60%, 100% { transform: rotate(0); }
+  70% { transform: rotate(-12deg); }
+  80% { transform: rotate(12deg); }
+  90% { transform: rotate(-6deg); }
+}
+
+// Tôn trọng người dùng tắt hiệu ứng chuyển động.
+@media (prefers-reduced-motion: reduce) {
+  .pulse,
+  .pulse svg {
+    animation: none;
+  }
+}
+
+// Nút gọi tư vấn — viền, phụ so với nút Zalo.
+.call {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  padding: 12px 24px;
+  border-radius: $radius;
+  border: 1px solid $primary;
+  background: $bg;
+  color: $primary-darker;
+  font-weight: 700;
+  font-size: 16px;
+
+  &:hover { background: $primary-soft; }
 }
 
 .tags {

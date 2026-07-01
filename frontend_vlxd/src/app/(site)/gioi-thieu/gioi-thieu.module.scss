@@ -1,0 +1,85 @@
+@use 'tokens' as *;
+
+.wrap {
+  padding: $space-5 1rem $space-6;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  margin-bottom: $space-4;
+  font-size: 14px;
+  color: $text-muted;
+
+  a:hover { color: $primary; }
+  span { color: $text; font-weight: 600; }
+  .sep { margin: 0 6px; color: $border-strong; }
+}
+
+.crumbHome {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: $space-5;
+  align-items: start;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.main {
+  min-width: 0;
+}
+
+.title {
+  margin: 0 0 $space-4;
+  font-size: 26px;
+  font-weight: 700;
+  color: $text;
+  text-transform: uppercase;
+  padding-bottom: $space-3;
+  box-shadow: inset 0 -2px 0 0 $primary;
+  display: inline-block;
+}
+
+.prose {
+  color: $text;
+  line-height: 1.8;
+  font-size: 15px;
+
+  p { margin: 0 0 $space-4; }
+  strong { color: $text; }
+}
+
+.contact {
+  margin-top: $space-5;
+  padding-top: $space-4;
+  box-shadow: inset 0 1px 0 0 $border;
+  line-height: 1.9;
+  font-size: 15px;
+  color: $text;
+
+  p { margin: 0; }
+
+  a { color: $primary-darker; }
+  a:hover { text-decoration: underline; }
+}
+
+.contactLead {
+  color: $text-muted;
+  margin-bottom: $space-2 !important;
+}
+
+.company {
+  font-weight: 700;
+  font-size: 16px;
+  text-transform: uppercase;
+  color: $primary-darker;
+  margin-bottom: 4px !important;
+}
