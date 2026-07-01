@@ -191,6 +191,40 @@ export interface SupportContactInput {
   isActive?: boolean;
 }
 
+// ---------- Videos ----------
+
+/** Vị trí hiển thị video — khớp VIDEO_POSITIONS ở backend (cột SET). */
+export const VIDEO_POSITIONS = [
+  { value: 'home', label: 'Trang chủ' },
+  { value: 'sidebar', label: 'Cột bên (sidebar)' },
+  { value: 'about', label: 'Trang giới thiệu' },
+] as const;
+
+export type VideoPosition = (typeof VIDEO_POSITIONS)[number]['value'];
+
+export function videoPositionLabel(value: string): string {
+  return VIDEO_POSITIONS.find((p) => p.value === value)?.label ?? value;
+}
+
+export interface Video {
+  id: number;
+  title: string | null;
+  youtubeUrl: string;
+  position: string[];
+  sortOrder: number;
+  isActive: boolean;
+  createdAt: string;
+}
+
+/** Body POST/PUT /admin/videos (field optional cho update). */
+export interface VideoInput {
+  title?: string;
+  youtubeUrl: string;
+  position?: VideoPosition[];
+  sortOrder?: number;
+  isActive?: boolean;
+}
+
 // ---------- Products ----------
 
 export type PriceType = 'fixed' | 'contact';

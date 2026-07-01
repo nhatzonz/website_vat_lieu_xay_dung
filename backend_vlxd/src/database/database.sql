@@ -448,6 +448,10 @@ INSERT INTO support_contacts (name, phone, zalo, channel, sort_order, is_active)
   ('Mr Công',      '0972 217 770', '0972 217 770', 'hotline', 2, 1),
   ('Ms Anh',       '0975 436 660', '0975 436 660', 'hotline', 3, 1);
 
+-- Video clips (hiển thị ở sidebar + trang chủ)
+INSERT INTO videos (title, youtube_url, position, sort_order, is_active) VALUES
+  ('Thi công lắp đặt trần nhôm - Lam chắn nắng', 'https://www.youtube.com/watch?v=aqz-KE-bpKQ', 'home,sidebar,about', 1, 1);
+
 
 -- =====================================================================
 -- KẾT THÚC SCHEMA

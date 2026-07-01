@@ -10,6 +10,7 @@ import {
   Package,
   Settings,
   Tags,
+  Video,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -27,6 +28,7 @@ const NAV = [
   { href: '/admin/attributes', label: 'Thuộc tính', icon: ListChecks },
   { href: '/admin/tags', label: 'Thẻ', icon: Tags },
   { href: '/admin/banners', label: 'Banner', icon: GalleryHorizontalEnd },
+  { href: '/admin/videos', label: 'Video', icon: Video },
   { href: '/admin/support', label: 'Hỗ trợ', icon: Headphones },
   { href: '/admin/settings', label: 'Cấu hình', icon: Settings },
 ];

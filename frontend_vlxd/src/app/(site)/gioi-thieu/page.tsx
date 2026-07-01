@@ -1,9 +1,13 @@
 import { Home } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { SectionHeading } from '@/components/site/SectionHeading';
 import { SiteSidebar } from '@/components/site/SiteSidebar';
+import { VideoGrid } from '@/components/site/VideoGrid';
 import { buildMetadata } from '@/lib/seo';
 import { fullAddress, getPublicSettings } from '@/lib/settings';
+import { getVideos } from '@/lib/videos';
+import type { PublicVideo } from '@/types/catalog';
 import styles from './gioi-thieu.module.scss';
 
 export const revalidate = 300;
@@ -13,7 +17,10 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function AboutPage() {
-  const settings = await getPublicSettings();
+  const [settings, aboutVideos] = await Promise.all([
+    getPublicSettings(),
+    getVideos('about').catch(() => [] as PublicVideo[]),
+  ]);
   const name = settings.company_name || 'Chúng tôi';
   const phone = settings.hotline;
   const email = settings.email;
@@ -67,6 +74,13 @@ export default async function AboutPage() {
               để luôn xứng đáng với niềm tin ấy.
             </p>
           </div>
+
+          {aboutVideos.length > 0 && (
+            <section className={styles.videos}>
+              <SectionHeading title="Video giới thiệu" />
+              <VideoGrid videos={aboutVideos} limit={2} />
+            </section>
+          )}
 
           <div className={styles.contact}>
             <p className={styles.contactLead}>Mọi thông tin xin liên hệ:</p>

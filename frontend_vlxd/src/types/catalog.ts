@@ -86,6 +86,15 @@ export interface PublicCategory {
   children?: PublicCategory[];
 }
 
+/** Video YouTube công khai (GET /public/videos). `position` là mảng (SET). */
+export interface PublicVideo {
+  id: number;
+  title: string | null;
+  youtubeUrl: string;
+  position: string[];
+  sortOrder: number;
+}
+
 /** Nhân viên/kênh "Hỗ trợ trực tuyến" (GET /public/support). */
 export interface PublicSupport {
   id: number;

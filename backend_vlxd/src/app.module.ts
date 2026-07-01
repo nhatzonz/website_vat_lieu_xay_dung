@@ -18,6 +18,7 @@ import { SettingsModule } from './modules/settings/settings.module';
 import { SupportModule } from './modules/support/support.module';
 import { TagsModule } from './modules/tags/tags.module';
 import { UploadModule } from './modules/upload/upload.module';
+import { VideosModule } from './modules/videos/videos.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { UploadModule } from './modules/upload/upload.module';
     ProductsModule,
     BannersModule,
     SupportModule,
+    VideosModule,
     UploadModule,
     // Các module nghiệp vụ tiếp theo (products, news...) thêm vào đây.
   ],

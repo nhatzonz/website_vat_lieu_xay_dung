@@ -1,0 +1,237 @@
+@use 'tokens' as *;
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-3;
+  flex-wrap: wrap;
+}
+
+.heading {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  font-size: 18px;
+  font-weight: 700;
+  color: $text;
+
+  svg {
+    color: #dc2626;
+  }
+}
+
+.count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: $primary-soft;
+  color: $primary-darker;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.note {
+  margin: 0;
+  color: $text-muted;
+  font-size: 13px;
+}
+
+.saving {
+  color: $primary;
+  font-style: italic;
+  font-size: 13px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.card {
+  @include card;
+  display: flex;
+  align-items: center;
+  gap: $space-4;
+  padding: $space-3 $space-4;
+  transition: box-shadow 0.15s ease;
+}
+
+.grip {
+  color: $border-strong;
+  cursor: grab;
+  flex-shrink: 0;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.thumb {
+  position: relative;
+  width: 132px;
+  height: 74px;
+  flex-shrink: 0;
+  border-radius: $radius;
+  overflow: hidden;
+  background: #000;
+  border: 1px solid $border;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.noThumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: #fff;
+  font-size: 20px;
+}
+
+.playMini {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: rgba(220, 38, 38, 0.9);
+  color: #fff;
+  padding-left: 2px;
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title {
+  font-weight: 600;
+  color: $text;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.url {
+  font-size: 12px;
+  color: $text-muted;
+  font-family: ui-monospace, monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.tag {
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: $primary-soft;
+  color: $primary-darker;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.muted {
+  color: $text-muted;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  flex-shrink: 0;
+}
+
+.actions {
+  display: inline-flex;
+  gap: $space-2;
+  flex-shrink: 0;
+}
+
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid $border;
+  border-radius: $radius;
+  background: $bg;
+  color: $text-muted;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    background: $primary-soft;
+    color: $text;
+    border-color: $primary;
+  }
+}
+
+.danger:hover {
+  background: #fef2f2;
+  color: $danger;
+  border-color: #fecaca;
+}
+
+.dragging {
+  opacity: 0.4;
+}
+
+.dropTarget {
+  box-shadow: inset 0 2px 0 0 $primary;
+}
+
+.empty {
+  @include card;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-4;
+  padding: $space-6;
+  color: $text-muted;
+
+  p {
+    margin: 0;
+  }
+}
+
+.error {
+  @include card;
+  padding: $space-5;
+  color: $danger-dark;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
