@@ -9,6 +9,7 @@ import { PaginatedResult } from '../../common/dto/paginated-result';
 import { imageUrlsFromHtml } from '../../common/util/html-images';
 import { sanitizeContent } from '../../common/util/sanitize';
 import { uniqueSlug } from '../../common/util/slugify';
+import { normalizeSearch, viFoldExpr } from '../../common/util/vi-search';
 import { Attribute } from '../attributes/attribute.entity';
 import { Category } from '../categories/category.entity';
 import { Tag } from '../tags/tag.entity';
@@ -174,6 +175,16 @@ export class ProductsService {
     return this.findByIdAdmin(id);
   }
 
+  /** Cập nhật hàng loạt sortOrder khi admin kéo thả sắp xếp. */
+  async reorder(items: { id: number; sortOrder: number }[]): Promise<void> {
+    if (items.length === 0) return;
+    await this.dataSource.transaction(async (m) => {
+      for (const it of items) {
+        await m.update(Product, it.id, { sortOrder: it.sortOrder });
+      }
+    });
+  }
+
   /** Xóa sản phẩm + dọn mọi ảnh Cloudinary (con tự xóa theo CASCADE). */
   async remove(id: number): Promise<void> {
     const product = await this.products.findOne({
@@ -226,7 +237,14 @@ export class ProductsService {
       qb.andWhere('p.id != :ex', { ex: query.excludeId });
     }
     if (query.q) {
-      qb.andWhere('(p.name LIKE :q OR p.sku LIKE :q)', { q: `%${query.q}%` });
+      // Tìm không dấu, không phân biệt hoa/thường, bỏ khoảng trắng.
+      const nq = normalizeSearch(query.q);
+      if (nq) {
+        qb.andWhere(
+          `(${viFoldExpr('p.name')} LIKE :q OR ${viFoldExpr('p.sku')} LIKE :q)`,
+          { q: `%${nq}%` },
+        );
+      }
     }
 
     this.applySort(qb, query.sort);
@@ -281,8 +299,10 @@ export class ProductsService {
       case 'name':
         qb.orderBy('p.name', 'ASC');
         break;
+      case 'manual':
       default:
-        // Mặc định: Nổi bật lên đầu, rồi tới thứ tự sắp xếp, rồi mới nhất.
+        // Nổi bật lên đầu → sortOrder → mới nhất. Chế độ 'manual' (admin kéo thả)
+        // dùng CÙNG tiêu chí phụ với client để admin phản ánh đúng thứ tự khách thấy.
         qb
           .orderBy('p.isFeatured', 'DESC')
           .addOrderBy('p.sortOrder', 'ASC')

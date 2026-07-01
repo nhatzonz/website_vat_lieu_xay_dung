@@ -56,21 +56,47 @@
   }
 }
 
-.select {
-  height: 42px;
-  min-width: 160px;
-  padding: 0 $space-4 0 $space-3;
-  border: 1px solid $border;
-  border-radius: $radius;
-  background: $bg;
-  font-size: 14px;
-  color: $text;
-  cursor: pointer;
+.hint {
+  margin: -4px 0 0;
+  font-size: 13px;
+  color: $text-muted;
+}
 
-  &:focus {
-    outline: none;
-    border-color: $primary;
-  }
+// --- Cột thứ tự & kéo thả ---
+.orderCell {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+}
+
+.dragHandle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: $radius-sm;
+  background: transparent;
+  color: $border-strong;
+  cursor: grab;
+  transition: background 0.12s ease, color 0.12s ease;
+
+  &:hover:not(:disabled) { background: $primary-soft; color: $primary; }
+  &:active:not(:disabled) { cursor: grabbing; }
+  &:disabled { cursor: default; opacity: 0.35; }
+}
+
+.orderNum {
+  min-width: 18px;
+  font-size: 13px;
+  font-weight: 700;
+  color: $text-muted;
+}
+
+// Vạch báo vị trí thả (dùng box-shadow, không dùng border-top).
+.dragOver td {
+  box-shadow: inset 0 2px 0 0 $primary;
 }
 
 .tableCard {

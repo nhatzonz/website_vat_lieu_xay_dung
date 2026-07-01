@@ -1,0 +1,84 @@
+@use 'tokens' as *;
+
+.box {
+  display: flex;
+  align-items: center;
+  flex: 1 1 280px;
+  min-width: 220px;
+  max-width: 380px;
+  height: 42px;
+  padding: 0 0 0 $space-3;
+  background: $bg;
+  border: 1px solid $border;
+  border-radius: $radius;
+  overflow: hidden;
+
+  &:focus-within {
+    border-color: $primary;
+    box-shadow: 0 0 0 3px $primary-soft;
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    color: $text;
+
+    &::placeholder {
+      color: $text-muted;
+    }
+    &::-webkit-search-cancel-button {
+      display: none;
+    }
+  }
+}
+
+.spin {
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  margin-right: 4px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: $text-muted;
+  cursor: pointer;
+
+  &:hover {
+    background: $bg-soft;
+    color: $text;
+  }
+}
+
+// Nút kính lúp nổi bật bên phải để người dùng thấy rõ chỗ tìm.
+.searchBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 46px;
+  height: 100%;
+  border: none;
+  background: $primary;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover { background: $primary-dark; }
+  &:active { background: $primary-darker; }
+}

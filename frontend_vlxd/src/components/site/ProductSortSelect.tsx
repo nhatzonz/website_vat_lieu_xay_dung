@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import styles from './ProductSortSelect.module.scss';
+import { FilterSelect } from '@/components/admin/ui/FilterSelect';
 
 const OPTIONS = [
   { value: 'newest', label: 'Mới nhất' },
@@ -21,21 +21,15 @@ export function ProductSortSelect({ current }: { current: string }) {
     const sp = new URLSearchParams(searchParams.toString());
     sp.set('sort', value);
     sp.delete('page');
-    router.push(`${pathname}?${sp.toString()}`);
+    router.push(`${pathname}?${sp.toString()}`, { scroll: false });
   }
 
   return (
-    <select
-      className={styles.select}
+    <FilterSelect
       value={current}
-      onChange={(e) => onChange(e.target.value)}
-      aria-label="Sắp xếp"
-    >
-      {OPTIONS.map((o) => (
-        <option key={o.value} value={o.value}>
-          {o.label}
-        </option>
-      ))}
-    </select>
+      options={OPTIONS}
+      onChange={onChange}
+      ariaLabel="Sắp xếp"
+    />
   );
 }

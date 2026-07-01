@@ -9,6 +9,7 @@ export const PRODUCT_SORTS = [
   'price_desc',
   'popular',
   'name',
+  'manual',
 ] as const;
 export type ProductSort = (typeof PRODUCT_SORTS)[number];
 

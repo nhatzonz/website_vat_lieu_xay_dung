@@ -1,9 +1,10 @@
 'use client';
 
-import { ImageOff, Pencil, Plus, Search, Trash2 } from 'lucide-react';
+import { GripVertical, ImageOff, Pencil, Plus, Search, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/admin/ui/Button';
+import { FilterSelect } from '@/components/admin/ui/FilterSelect';
 import { Modal } from '@/components/admin/ui/Modal';
 import { Spinner } from '@/components/admin/ui/Spinner';
 import { useToast } from '@/components/admin/ui/Toast';
@@ -13,7 +14,23 @@ import { flattenTree } from '@/lib/category-tree';
 import type { Category, Paginated, ProductListItem } from '@/types/admin';
 import styles from './products.module.scss';
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 30;
+
+const STATUS_OPTIONS = [
+  { value: '', label: 'Mọi trạng thái' },
+  { value: 'active', label: 'Đang hiển thị' },
+  { value: 'inactive', label: 'Đang ẩn' },
+];
+
+const SORT_OPTIONS = [
+  { value: 'manual', label: 'Thứ tự (kéo thả)' },
+  { value: 'newest', label: 'Mới nhất' },
+  { value: 'oldest', label: 'Cũ nhất' },
+  { value: 'price_asc', label: 'Giá tăng dần' },
+  { value: 'price_desc', label: 'Giá giảm dần' },
+  { value: 'popular', label: 'Xem nhiều' },
+  { value: 'name', label: 'Tên A–Z' },
+];
 
 function formatPrice(p: ProductListItem): string {
   if (p.priceType === 'contact' || p.price === null) return 'Liên hệ';
@@ -33,12 +50,21 @@ export default function ProductsPage() {
   const [debouncedQ, setDebouncedQ] = useState('');
   const [category, setCategory] = useState('');
   const [status, setStatus] = useState('');
-  const [sort, setSort] = useState('newest');
+  const [sort, setSort] = useState('manual');
   const [page, setPage] = useState(1);
 
   const [cats, setCats] = useState<Category[]>([]);
   const [deleting, setDeleting] = useState<ProductListItem | null>(null);
   const [removing, setRemoving] = useState(false);
+
+  // Bản sao cục bộ để kéo thả (cập nhật lạc quan trước khi lưu server).
+  const [rows, setRows] = useState<ProductListItem[]>([]);
+  const dragFrom = useRef<number | null>(null);
+  const [dragOver, setDragOver] = useState<number | null>(null);
+
+  // Kéo thả chỉ bật khi xem theo "Thứ tự" và không lọc/tìm (thứ tự thuần).
+  const dragEnabled =
+    canEdit && sort === 'manual' && !debouncedQ.trim() && !category && !status;
 
   // Nạp danh mục cho bộ lọc (1 lần).
   useEffect(() => {
@@ -84,12 +110,64 @@ export default function ProductsPage() {
     load();
   }, [load]);
 
+  // Đồng bộ bản cục bộ mỗi khi dữ liệu server thay đổi.
+  useEffect(() => {
+    setRows(data?.data ?? []);
+  }, [data]);
+
+  function onDragStart(i: number) {
+    dragFrom.current = i;
+  }
+
+  function onDragOver(i: number, e: React.DragEvent) {
+    if (!dragEnabled || dragFrom.current === null) return;
+    e.preventDefault();
+    setDragOver(i);
+    const from = dragFrom.current;
+    if (from === i) return;
+    // Di chuyển hàng ngay trong lúc kéo để phản hồi mượt.
+    setRows((prev) => {
+      const next = [...prev];
+      const [moved] = next.splice(from, 1);
+      next.splice(i, 0, moved);
+      return next;
+    });
+    dragFrom.current = i;
+  }
+
+  async function onDrop() {
+    dragFrom.current = null;
+    setDragOver(null);
+
+    // Đánh lại chỉ số theo vị trí hiển thị mới (0,1,2,… kèm offset trang).
+    // Chỉ gửi những item có sortOrder thực sự thay đổi → ít ghi DB.
+    const base = (page - 1) * PAGE_SIZE;
+    const items = rows
+      .map((r, idx) => ({ id: r.id, sortOrder: base + idx, old: r.sortOrder }))
+      .filter((x) => x.sortOrder !== x.old)
+      .map(({ id, sortOrder }) => ({ id, sortOrder }));
+    if (items.length === 0) return;
+
+    try {
+      await adminApi.patch('/admin/products/reorder', { items });
+      // Nạp lại để backend áp quy tắc "nổi bật lên đầu".
+      load();
+    } catch (err) {
+      toast.error(
+        err instanceof AdminApiError ? err.message : 'Lưu thứ tự thất bại.',
+      );
+      load(); // khôi phục thứ tự cũ
+    }
+  }
+
   const catOptions = useMemo(
-    () =>
-      flattenTree(cats).map((r) => ({
-        slug: r.category.slug,
+    () => [
+      { value: '', label: 'Tất cả danh mục' },
+      ...flattenTree(cats).map((r) => ({
+        value: r.category.slug,
         label: `${'— '.repeat(r.depth)}${r.category.name}`,
       })),
+    ],
     [cats],
   );
 
@@ -137,40 +215,33 @@ export default function ProductsPage() {
             onChange={(e) => setQ(e.target.value)}
           />
         </div>
-        <select
-          className={styles.select}
+        <FilterSelect
           value={category}
-          onChange={(e) => setCategory(e.target.value)}
-        >
-          <option value="">Tất cả danh mục</option>
-          {catOptions.map((o) => (
-            <option key={o.slug} value={o.slug}>
-              {o.label}
-            </option>
-          ))}
-        </select>
-        <select
-          className={styles.select}
+          options={catOptions}
+          onChange={setCategory}
+          ariaLabel="Lọc theo danh mục"
+        />
+        <FilterSelect
           value={status}
-          onChange={(e) => setStatus(e.target.value)}
-        >
-          <option value="">Mọi trạng thái</option>
-          <option value="active">Đang hiển thị</option>
-          <option value="inactive">Đang ẩn</option>
-        </select>
-        <select
-          className={styles.select}
+          options={STATUS_OPTIONS}
+          onChange={setStatus}
+          ariaLabel="Lọc theo trạng thái"
+        />
+        <FilterSelect
           value={sort}
-          onChange={(e) => setSort(e.target.value)}
-        >
-          <option value="newest">Mới nhất</option>
-          <option value="oldest">Cũ nhất</option>
-          <option value="price_asc">Giá tăng dần</option>
-          <option value="price_desc">Giá giảm dần</option>
-          <option value="popular">Xem nhiều</option>
-          <option value="name">Tên A–Z</option>
-        </select>
+          options={SORT_OPTIONS}
+          onChange={setSort}
+          ariaLabel="Sắp xếp"
+        />
       </div>
+
+      {canEdit && sort === 'manual' && (
+        <p className={styles.hint}>
+          {dragEnabled
+            ? 'Kéo biểu tượng ⠿ ở cột “Thứ tự” để sắp xếp lại. Sản phẩm nổi bật luôn ưu tiên lên đầu.'
+            : 'Bỏ tìm kiếm và bộ lọc để bật kéo thả sắp xếp.'}
+        </p>
+      )}
 
       {loading ? (
         <Spinner label="Đang tải sản phẩm..." />
@@ -193,6 +264,7 @@ export default function ProductsPage() {
           <table className={styles.table}>
             <thead>
               <tr>
+                {canEdit && <th className={styles.center}>Thứ tự</th>}
                 <th>Ảnh</th>
                 <th>Tên sản phẩm</th>
                 <th>Danh mục</th>
@@ -204,12 +276,44 @@ export default function ProductsPage() {
               </tr>
             </thead>
             <tbody>
-              {items.map((p) => (
+              {rows.map((p, i) => (
                 <tr
                   key={p.id}
-                  className={canEdit ? styles.clickable : undefined}
+                  className={[
+                    canEdit ? styles.clickable : '',
+                    dragOver === i ? styles.dragOver : '',
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
                   onClick={() => canEdit && router.push(`/admin/products/${p.id}`)}
+                  onDragOver={(e) => onDragOver(i, e)}
+                  onDrop={(e) => e.preventDefault()}
                 >
+                  {canEdit && (
+                    <td
+                      className={styles.center}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className={styles.orderCell}>
+                        <button
+                          type="button"
+                          className={styles.dragHandle}
+                          draggable={dragEnabled}
+                          onDragStart={() => onDragStart(i)}
+                          onDragEnd={onDrop}
+                          title={
+                            dragEnabled
+                              ? 'Kéo để đổi thứ tự'
+                              : 'Chọn sắp xếp “Thứ tự” và bỏ lọc để kéo thả'
+                          }
+                          disabled={!dragEnabled}
+                        >
+                          <GripVertical size={16} />
+                        </button>
+                        <span className={styles.orderNum}>{p.sortOrder}</span>
+                      </div>
+                    </td>
+                  )}
                   <td>
                     {p.thumbnail ? (
                       // eslint-disable-next-line @next/next/no-img-element

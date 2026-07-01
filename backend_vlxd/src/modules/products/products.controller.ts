@@ -6,6 +6,7 @@ import {
   HttpCode,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Put,
   Query,
@@ -15,6 +16,7 @@ import { Public } from '../../common/decorators/public.decorator';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { CreateProductDto } from './dto/create-product.dto';
 import { QueryProductDto } from './dto/query-product.dto';
+import { ReorderProductsDto } from './dto/reorder-products.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './products.service';
 
@@ -64,6 +66,14 @@ export class ProductsController {
   @Post('admin/products')
   create(@Body() dto: CreateProductDto) {
     return this.productsService.create(dto);
+  }
+
+  @ApiBearerAuth()
+  @Roles('super_admin')
+  @Patch('admin/products/reorder')
+  @HttpCode(204)
+  async reorder(@Body() dto: ReorderProductsDto) {
+    await this.productsService.reorder(dto.items);
   }
 
   @ApiBearerAuth()

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ProductCard } from '@/components/site/ProductCard';
+import { ProductSearch } from '@/components/site/ProductSearch';
 import { ProductSortSelect } from '@/components/site/ProductSortSelect';
 import { SiteSidebar } from '@/components/site/SiteSidebar';
 import { getCategoryTree, findCategoryBySlug } from '@/lib/categories';
@@ -37,12 +38,12 @@ export default async function ProductListPage({ searchParams }: Props) {
     getCategoryTree().catch(() => [] as PublicCategory[]),
     getProducts({
       page,
-      limit: 12,
+      limit: 24,
       sort,
       category,
       tag: searchParams.tag,
       q: searchParams.q,
-    }).catch(() => ({ data: [], meta: { total: 0, page: 1, limit: 12, totalPages: 1 } })),
+    }).catch(() => ({ data: [], meta: { total: 0, page: 1, limit: 24, totalPages: 1 } })),
   ]);
 
   const activeCat = category ? findCategoryBySlug(tree, category)?.node : null;
@@ -84,7 +85,10 @@ export default async function ProductListPage({ searchParams }: Props) {
               {heading}{' '}
               <span className={styles.resultCount}>({meta.total} sản phẩm)</span>
             </h1>
-            <ProductSortSelect current={sort} />
+            <div className={styles.toolbarControls}>
+              <ProductSearch current={searchParams.q || ''} />
+              <ProductSortSelect current={sort} />
+            </div>
           </div>
 
           {products.length === 0 ? (
